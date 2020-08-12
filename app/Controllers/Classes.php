@@ -6,147 +6,57 @@ use App\Models\ManageUser;
 class Classes extends BaseController
 {
     public function create(){
+        // check if can create class
+        $permModel = new ManagePermission();
+        $role_id =session()->get('role_id');
+        $allowed = $permModel->fetchRolePerms($role_id);
+        
         $data = [];
         helper(['form']);
-        $perms = new ManagePermission();
-        $allowed = $perms->getUserPerms(session()->get('user_id'));
-        $model = new ClassModel();
-
-        if ($this->request->getMethod() == 'post' && in_array(3, $allowed)){
-            // validate class creation 
-            if ($this->request->getPost('recurring') == 1){
-                $rules = [
-                    'call_link' => 'required|valid_url',
-                    'start_time' => 'required',
-                    'end_time' => 'required|compareTime[start_time,end_time]',
-                    'start_date' => 'required|valid_date|startCorrect',
-                ];    
-            } else {
-                $rules = [
-                    'call_link' => 'required|valid_url',
-                    'start_time' => 'required',
-                    'end_time' => 'required|compareTime[start_time,end_time]',
-                    'start_date' => 'required|valid_date|startCorrect',
-                    'end_date' => 'required|valid_date|compareDate[start_date,end_date]',
-                ];
-            }
-            
-            // unique error message
-            $errors = [
-                'start_date' => [
-                    'startCorrect' => 'Cannot begin before today'
-                    ],
-                'end_time' => [
-                'compareTime' => 'Time ending after start time'
-                ],
-				'end_date' => [
-					'compareDate' => 'Date ending after start date'
-				]
-            ];
-
-            // Return errors? 
-            if (! $this->validate($rules,$errors)){
-                $data['validation'] = $this->validator;
-            } else {
-                if ($this->request->getPost('recurring') != 1){
-                $dow = $this->request->getPost('dow');
-                $dow = implode('',$dow);
-                $pretest = $model->autoinc() + 1;
-                $posttest = $model->autoinc() + 2;
-                $newData = [
-                    'class_name'=> $this->request->getPost('class_name'),
-                    'description'=> $this->request->getPost('description'),
-                    'call_link'=> $this->request->getPost('call_link'),
-                    'start_time'=> $this->request->getPost('start_time'),
-                    'end_time'=> $this->request->getPost('end_time'),
-                    'start_date'=> $this->request->getPost('start_date'),
-                    'end_date'=> $this->request->getPost('end_date'),
-                    'recurring' => $this->request->getPost('recurring'),
-                    'pretest_id'=>$pretest,
-                    'posttest_id'=>$posttest,
-                    'class_status' => 0,
-                    'dow'=>$dow
-                ];
+        $classModel = new ClassModel();
+        if ( in_array(3, $allowed)){
+            if ($this->request->getMethod() == 'post' ){
+                // validate class creation 
+                if ($this->request->getPost('recurring') == 1){
+                    $rules = [
+                        'call_link' => 'required|valid_url',
+                        'start_time' => 'required',
+                        'end_time' => 'required|compareTime[start_time,end_time]',
+                        'start_date' => 'required|valid_date|startCorrect',
+                    ];    
                 } else {
-                    $pretest = $model->autoinc() + 1;
-                    $posttest = $model->autoinc() + 2;
-                    $newData = [
-                        'class_name'=> $this->request->getPost('class_name'),
-                        'description'=> $this->request->getPost('description'),
-                        'call_link'=> $this->request->getPost('call_link'),
-                        'start_time'=> $this->request->getPost('start_time'),
-                        'end_time'=> $this->request->getPost('end_time'),
-                        'start_date'=> $this->request->getPost('start_date'),
-                        'end_date'=> $this->request->getPost('start_date'),
-                        'recurring' => $this->request->getPost('recurring'),
-                        'pretest_id'=>$pretest,
-                        'posttest_id'=>$posttest,
-                        'class_status' => 0,
+                    $rules = [
+                        'call_link' => 'required|valid_url',
+                        'start_time' => 'required',
+                        'end_time' => 'required|compareTime[start_time,end_time]',
+                        'start_date' => 'required|valid_date|startCorrect',
+                        'end_date' => 'required|valid_date|compareDate[start_date,end_date]',
                     ];
                 }
-                $model->addClass($newData); 
-                $session = session();
-                $session->setFlashData('success', 'Created class!');
-                return redirect()->to('/k24/public/Classes/create');
-            }
-        } elseif (!in_array(3, $allowed)) {
-            echo "Not allowed to make class!";
-        }
-
-        echo view("templates/header", $data);
-        echo view("pages/createClass");
-        echo view("templates/footer");
-    }
-
-
-    public function edit($class_id){
-        $data = [];
-        helper(['form']);
-        $perms = new ManagePermission();
-        $allowed = $perms->getUserPerms(session()->get('user_id'));
-
-        $classModel = new ClassModel();
-        $class = $classModel->getClassByID($class_id);
-        $data['class'] = $class;
-        
-
-        if ($this->request->getMethod() == 'post' && in_array(17, $allowed)){
-            if ($this->request->getPost('recurring') == 1){
-                $rules = [
-                    'call_link' => 'required|valid_url',
-                    'start_time' => 'required',
-                    'end_time' => 'required|compareTime[start_time,end_time]',
-                    'start_date' => 'required|valid_date|startCorrect',
-                ];    
-            } else {
-                $rules = [
-                    'call_link' => 'required|valid_url',
-                    'start_time' => 'required',
-                    'end_time' => 'required|compareTime[start_time,end_time]',
-                    'start_date' => 'required|valid_date|startCorrect',
-                    'end_date' => 'required|valid_date|compareDate[start_date,end_date]',
-                ];
-            }
-            
-            // unique error message
-            $errors = [
-                'start_date' => [
-                    'startCorrect' => 'Cannot begin before today'
+                
+                // unique error message
+                $errors = [
+                    'start_date' => [
+                        'startCorrect' => 'Cannot begin before today'
+                        ],
+                    'end_time' => [
+                    'compareTime' => 'Time ending after start time'
                     ],
-                'end_time' => [
-                'compareTime' => 'Time ending after start time'
-                ],
-				'end_date' => [
-					'compareDate' => 'Date ending after start date'
-				]
-            ];
-            if (! $this->validate($rules,$errors)){
-                $data['validation'] = $this->validator;
-            } else {
-                // validate class editing. recurring = 1 is one day. 
-                if ($this->request->getPost('recurring') != 1){
+                    'end_date' => [
+                        'compareDate' => 'Date ending after start date'
+                    ]
+                ];
+
+                // Return errors? 
+                if (! $this->validate($rules,$errors)){
+                    $data['validation'] = $this->validator;
+                    
+                } else {
+                    if ($this->request->getPost('recurring') != 1){
                     $dow = $this->request->getPost('dow');
                     $dow = implode('',$dow);
+                    $pretest = $classModel->autoinc() + 1;
+                    $posttest = $classModel->autoinc() + 2;
                     $newData = [
                         'class_name'=> $this->request->getPost('class_name'),
                         'description'=> $this->request->getPost('description'),
@@ -156,29 +66,136 @@ class Classes extends BaseController
                         'start_date'=> $this->request->getPost('start_date'),
                         'end_date'=> $this->request->getPost('end_date'),
                         'recurring' => $this->request->getPost('recurring'),
+                        'pretest_id'=>$pretest,
+                        'posttest_id'=>$posttest,
                         'class_status' => 0,
                         'dow'=>$dow
                     ];
-                } else {    
-                    $newData = [
-                        'class_name'=> $this->request->getPost('class_name'),
-                        'description'=> $this->request->getPost('description'),
-                        'call_link'=> $this->request->getPost('call_link'),
-                        'start_time'=> $this->request->getPost('start_time'),
-                        'end_time'=> $this->request->getPost('end_time'),
-                        'start_date'=> $this->request->getPost('start_date'),
-                        'end_date'=> $this->request->getPost('start_date'),
-                        'recurring' => $this->request->getPost('recurring'),
-                        'class_status' => 0,
+                    } else {
+                        $pretest = $classModel->autoinc() + 1;
+                        $posttest = $classModel->autoinc() + 2;
+                        $newData = [
+                            'class_name'=> $this->request->getPost('class_name'),
+                            'description'=> $this->request->getPost('description'),
+                            'call_link'=> $this->request->getPost('call_link'),
+                            'start_time'=> $this->request->getPost('start_time'),
+                            'end_time'=> $this->request->getPost('end_time'),
+                            'start_date'=> $this->request->getPost('start_date'),
+                            'end_date'=> $this->request->getPost('start_date'),
+                            'recurring' => $this->request->getPost('recurring'),
+                            'pretest_id'=>$pretest,
+                            'posttest_id'=>$posttest,
+                            'class_status' => 0,
+                        ];
+                    }
+                    $user_id = session()->get('user_id');
+
+                    $classModel->addClass($newData, $user_id); 
+                    session()->setFlashData('success', 'Created class!');
+                    return redirect()->to('/k24/public/Classes/create');
+                }
+            }           
+        } else {
+            session()->setFlashData('error', 'Not allowed to make class!');
+        }
+
+        echo view("templates/header");
+        echo view("pages/createClass",$data);
+        echo view("templates/footer");
+    }
+
+
+    public function edit($class_id){
+        $permModel = new ManagePermission();
+        $role_id =session()->get('role_id');
+        $user_id =session()->get('user_id');
+        $class_id =session()->get('class_id');
+        $isHost = session()->get('isHost');
+        // if host of class, have special perms
+        if ($isHost == 1){
+            $allowed = $permModel->fetchRolePerms(2);
+        } else if ($role_id == 2 && $isHost ==0){
+            $allowed = $permModel->fetchRolePerms(3);
+        } else {
+            $allowed = $permModel->fetchRolePerms($role_id);
+        }
+
+        helper(['form']);
+        $classModel = new ClassModel();
+        $class = $classModel->getClassByID($class_id);
+        $data['class'] = $class;
+        
+        if (in_array(17, $allowed)){
+            if ($this->request->getMethod() == 'post'){
+                if ($this->request->getPost('recurring') == 1){
+                    $rules = [
+                        'call_link' => 'required|valid_url',
+                        'start_time' => 'required',
+                        'end_time' => 'required|compareTime[start_time,end_time]',
+                        'start_date' => 'required|valid_date|startCorrect',
+                    ];    
+                } else {
+                    $rules = [
+                        'call_link' => 'required|valid_url',
+                        'start_time' => 'required',
+                        'end_time' => 'required|compareTime[start_time,end_time]',
+                        'start_date' => 'required|valid_date|startCorrect',
+                        'end_date' => 'required|valid_date|compareDate[start_date,end_date]',
                     ];
                 }
-                $classModel->editClass($class_id, $newData); 
-                session()->setFlashData('success', 'Edited class!');
-                return redirect()->to('/k24/public/Classes/viewClass/'.$class_id);
+                
+                // unique error message
+                $errors = [
+                    'start_date' => [
+                        'startCorrect' => 'Cannot begin before today'
+                        ],
+                    'end_time' => [
+                    'compareTime' => 'Time ending after start time'
+                    ],
+                    'end_date' => [
+                        'compareDate' => 'Date ending after start date'
+                    ]
+                ];
+                if (! $this->validate($rules,$errors)){
+                    $data['validation'] = $this->validator;
+                } else {
+                    // validate class editing. recurring = 1 is one day. 
+                    if ($this->request->getPost('recurring') != 1){
+                        $dow = $this->request->getPost('dow');
+                        $dow = implode('',$dow);
+                        $newData = [
+                            'class_name'=> $this->request->getPost('class_name'),
+                            'description'=> $this->request->getPost('description'),
+                            'call_link'=> $this->request->getPost('call_link'),
+                            'start_time'=> $this->request->getPost('start_time'),
+                            'end_time'=> $this->request->getPost('end_time'),
+                            'start_date'=> $this->request->getPost('start_date'),
+                            'end_date'=> $this->request->getPost('end_date'),
+                            'recurring' => $this->request->getPost('recurring'),
+                            'class_status' => 0,
+                            'dow'=>$dow
+                        ];
+                    } else {    
+                        $newData = [
+                            'class_name'=> $this->request->getPost('class_name'),
+                            'description'=> $this->request->getPost('description'),
+                            'call_link'=> $this->request->getPost('call_link'),
+                            'start_time'=> $this->request->getPost('start_time'),
+                            'end_time'=> $this->request->getPost('end_time'),
+                            'start_date'=> $this->request->getPost('start_date'),
+                            'end_date'=> $this->request->getPost('start_date'),
+                            'recurring' => $this->request->getPost('recurring'),
+                            'class_status' => 0,
+                        ];
+                    }
+                    $classModel->editClass($class_id, $newData); 
+                    session()->setFlashData('success', 'Edited class!');
+                    return redirect()->to('/k24/public/Classes/viewClass/'.$class_id);
+                } 
+            // no permission
             } 
-        // no permission
-        } else if (!in_array(17, $allowed)) {
-            echo "Not allowed to edit class!";
+        } else {
+            session()->setFlashData('error', 'Not allowed to edit class!');
         }
 
         echo view("templates/header");
@@ -213,15 +230,14 @@ class Classes extends BaseController
     }
     
     public function classAction(){
-        $perms = new ManagePermission();
+        $permModel = new ManagePermission();
         $user_id = session()->get('user_id');
-        $allowed = $perms->getUserPerms($user_id);
+        $allowed = $permModel->fetchRolePerms(session()->get('role_id'));
         
         $model = new ClassModel();
         $data['classL'] = $model->getClasses();
         $userClasses = $model->myClasses($user_id);
         $data['userClasses'] = array_values($userClasses);
-        
         if ($this->request->getMethod() == "get"){
             // join class
             if ($this->request->getVar('join')){
@@ -229,19 +245,25 @@ class Classes extends BaseController
                 // check for time conflict
                 if ($model->noTimeConflict($user_id, $class_id) && $model->canJoin($class_id)){
                     $model->joinClass($user_id, $class_id);
-                    echo "JOINED SUCCESFULLY";
+                    session()->setFlashData('success', 'Joined class!');
                 } else if (!$model->canJoin($class_id)){
-                    echo "Class inactive";
+                    session()->setFlashData('error', 'Inactive class!');
                 } else {
-                    echo 'TIME CONFLICT';
+                    session()->setFlashData('error', 'Time conflict!');
                 }
             } 
             // Edit class info
             else if ($this->request->getVar('edit')){
                 $class_id = $this->request->getVar('edit');
-                return redirect()->to('/k24/public/Classes/edit/'.$class_id);
+                $isHost = $permModel->isHost($user_id, $class_id);
+                if ($isHost == 1){
+                    return redirect()->to('/k24/public/Classes/edit/'.$class_id);
+                } else {
+                    session()->setFlashdata('error', "Cannot edit class!");
+                    return redirect()->to(site_url('classes/viewclass/'.$class_id));
+                }
             }
-            // remove class
+            // remove class. only admin can remove
             else if($this->request->getVar('remove')){
                 // change class status to inactive 
                 if (in_array(16, $allowed)){
@@ -280,19 +302,26 @@ class Classes extends BaseController
         // get user info
         $user_classes = $classModel->userClasses(session()->get('user_id'));
         $data['user_classes'] = array_values($user_classes);
-
+        
         echo view("templates/header");
         echo view("pages/viewClass", $data);
         echo view("templates/footer");
     }
 
     private function setClassSession($class_info){
+        $classModel = new ClassModel();
+        $permModel = new ManagePermission();
+        $user_id = session()->get('user_id');
+        $isHost = $permModel->isHost($user_id, $class_info->class_id);
+        $joined = $classModel->joinedClass($user_id, $class_info->class_id);
         $data = [
             'class_id' => $class_info->class_id,
             'class_name' => $class_info->class_name,
             'pretest_id' => $class_info->pretest_id,
             'posttest_id' => $class_info->posttest_id,
             'class_status' => $class_info->class_status,
+            'isHost' => $isHost,
+            'joined' => $joined
         ];
         session()->set($data);
     }
@@ -301,22 +330,52 @@ class Classes extends BaseController
         $classModel = new ClassModel();
         $roleModel = new ManageUser();
 
+        $permModel = new ManagePermission();
+        $role_id =session()->get('role_id');
+        $user_id =session()->get('user_id');
+        $class_id =session()->get('class_id');
+        $isHost = session()->get('isHost');
+        // if host of class, have special perms
+        if ($isHost == 1){
+            $allowed = $permModel->fetchRolePerms(2);
+        } else if ($role_id == 2 && $isHost ==0){
+            // is a host but is not a host of this class
+            $allowed = $permModel->fetchRolePerms(3);
+        } else {
+            $allowed = $permModel->fetchRolePerms($role_id);
+        }
+
+        if ($this->request->getPost("invite")){
+            if (in_array(4, $allowed)){
+                $recipient = $this->request->getPost("user");
+                $message = site_url('classes/viewClass').$class_id;
+                $this->sendEmail($recipient, $message);
+            } else {
+                session()->setFlashData('error', 'No permission to invite user');
+            }
+        } 
+        else if ($this->request->getPost("host_request")){
+            if (in_array(6, $allowed)){
+                $user_id = $this->request->getPost("host_request");
+                $roleModel->addHostReq($user_id, $class_id);
+                session()->setFlashData('success', 'Pending host request');
+            } else {
+                session()->setFlashData('error', 'No permission to request host');
+            }
+           
+        } else if ($this->request->getPost("delete")){
+            if (in_array(19, $allowed)){
+                $user_id =$this->request->getPost("delete");
+                $classModel->removePeserta($user_id, $class_id);
+            } else {
+                session()->setFlashData('error', 'No permission to remove user');
+            }
+        }   
+
         $class_id = session()->get('class_id');
         $peserta = $classModel->getPeserta($class_id);
         $data['peserta'] = $peserta;
-        
-        if ($this->request->getPost("invite")){
-            $recipient = $this->request->getPost("user");
-            $message = base_url().'/k24/public/Classes/viewClass/'.$class_id;
-            $this->sendEmail($recipient, $message);
-        } 
-        else if ($this->request->getPost("host_request")){
-            $user_id = $this->request->getPost("host_request");
-            $roleModel->addHostReq($user_id);
-            echo "Pending request!";
-        } else if ($this->request->getPost("delete")){
 
-        }   
         echo view("templates/header");
         echo view("pages/people",$data);
         echo view("templates/footer");
@@ -332,9 +391,9 @@ class Classes extends BaseController
         $email->setMessage($message);
 
         if (!$email->send()){
-            echo "Not sent";
+            session()->setFlashData('error', 'Email not sent');
         } else {
-            echo "sent";
+            session()->setFlashData('success', 'Sent');
         }
     }
 } 

@@ -1,21 +1,33 @@
-<li class="breadcrumb-item"><a class="text-light" href="/k24/public/Dashboard/manageUsers">Manage User & Permission</a></li>
+<li class="breadcrumb-item"><a class="text-light" href="<?php echo site_url('dashboard/manageUsers')?>">Manage User & Permission</a></li>
 <li class="breadcrumb-item active" aria-current="page">Role Permissions</li>
 </ol>
 </nav>
+
+<!-- error & success -->
+<?php if (session()->get('success')): ?>
+    <div class="alert alert-success" role="alert">
+    <?= session()->get('success') ?>
+    </div>
+<?php endif; ?>  
+<?php  if (session()->get('error')): ?>
+<div class="alert alert-danger" role="alert">
+<?= session()->get('error') ?>
+</div>
+<?php endif; ?>
 
 <div id="accordion">
   <div class="card">
     <div class="card-header" id="headingOne">
       <h5 class="mb-0">
-        <button class="btn" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+        <button class="btn collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
           Admin
         </button>
       </h5>
     </div>
 
-    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordion">
+    <div id="collapseOne" class="collapse" aria-labelledby="headingOne"  data-parent="#accordion">
       <div class="card-body">
-        <form method='post' action='/k24/public/ManagePermissions/managePermissions'>
+        <form method='post' action='<?php echo site_url('ManagePermissions/managePermissions')?>'>
         <?php 
         foreach($all as $a){
             if (in_array($a->perm_id,$admins)){
@@ -44,7 +56,7 @@
     </div>
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
       <div class="card-body">
-        <form method='post' action='/k24/public/ManagePermissions/managePermissions'>
+        <form method='post' action='<?php echo site_url('ManagePermissions/managePermissions')?>'>
         <?php foreach($all as $a){
             if (in_array($a->perm_id,$hosts)){
                 echo '<input class="form-check-input" type="checkbox" id="perms" name="perms[]" value=" '.$a->perm_id.'" checked>';
@@ -71,7 +83,7 @@
     </div>
     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
       <div class="card-body">
-        <form method='post' action='/k24/public/ManagePermissions/managePermissions'>
+        <form method='post' action='<?php echo site_url('ManagePermissions/managePermissions')?>'>
         <?php foreach($all as $a){
             if (in_array($a->perm_id,$peserta)){
                 echo '<input class="form-check-input" type="checkbox" id="perms" name="perms[]" value=" '.$a->perm_id.'" checked>';

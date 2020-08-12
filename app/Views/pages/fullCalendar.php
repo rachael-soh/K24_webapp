@@ -12,8 +12,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
 
     <!-- FUllcalendar -->
-    <link href='http://localhost:8080/k24/fullcalendar/lib/main.css' rel='stylesheet' />
-    <script src='http://localhost:8080/k24/fullcalendar/lib/main.js'></script>
+    <link href='<?php echo base_url()?>/fullcalendar/lib/main.css' rel='stylesheet' />
+    <script src='<?php echo base_url()?>/fullcalendar/lib/main.js'></script>
     <script>
   document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
@@ -41,7 +41,7 @@
     <?php $uri = service('uri'); ?>
     <nav class="navbar navbar-expand-lg navbar-dark bg-success" aria-label="breadcrumb">
     <ol class="breadcrumb bg-transparent">
-      <li class="breadcrumb-item"><a href="/k24/public/" class="text-light">Home</a></li>
+      <li class="breadcrumb-item"><a href="<?php echo base_url()?>" class="text-light">Home</a></li>
     </ol>
     </nav>
 <br/>

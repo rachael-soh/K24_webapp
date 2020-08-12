@@ -10,7 +10,7 @@ class TestModel extends Model{
 
         $query = $db->query('
         WITH people AS (
-        SELECT u.fname, u.lname, c.class_name, c.class_id, uc.user_id 
+        SELECT u.fname, u.lname, c.class_name, c.class_id, uc.user_id
         FROM users u, classes c, user_classes uc 
         WHERE u.user_id = uc.user_id AND uc.class_id = c.class_id AND c.class_id ='.$class_id.'), 
 
@@ -21,13 +21,23 @@ class TestModel extends Model{
         ON people.user_id = user_scores.user_id 
         WHERE people.class_id = user_scores.class_id)
         
-        SELECT fname, lname, class_name,
+        SELECT user_id, fname, lname, class_name,
         (CASE WHEN test_status=1 THEN score ELSE NULL END) AS pretest,
-        (CASE WHEN test_status=2 OR test_status = 3 THEN score ELSE NULL END) AS posttest
+        (CASE WHEN (test_status=2 OR test_status = 3) THEN score ELSE NULL END) AS posttest
         FROM scores
         GROUP BY user_id');
 
-        $results = $query->getResult();
+        $queryA = $db->query('
+        WITH pretest AS (SELECT us.user_id, us.score as pretest, us.class_id FROM classes c, user_scores us WHERE c.pretest_id = us.test_id),
+        posttest AS (SELECT us.user_id, us.score as posttest, us.class_id FROM classes c, user_scores us WHERE c.posttest_id = us.test_id),
+        people AS (SELECT u.fname, u.lname, c.class_name, c.class_id, u.user_id, uc.host FROM users u, classes c, user_classes uc WHERE uc.class_id = c.class_id AND uc.user_id = u.user_id)
+        SELECT people.user_id, fname, lname, class_name, pretest, posttest, host
+        FROM people
+        LEFT JOIN pretest ON pretest.user_id = people.user_id AND pretest.class_id = people.class_id
+        LEFT JOIN posttest ON posttest.user_id = people.user_id AND posttest.class_id = people.class_id
+        WHERE people.class_id='.$class_id);
+
+        $results = $queryA->getResult();
         return $results;
     }
     
@@ -36,12 +46,8 @@ class TestModel extends Model{
         // people: get people in class
         // score: get scores of students in that class
         // final: set score of pretest & posttest
-        $queryA = $db->query('
-        SELECT u.fname, u.lname, u.user_id, c.class_name, c.class_id, us.score, c.class_status, us.test_status
-        FROM users u, user_classes uc, classes c, user_scores us
-        WHERE u.user_id = uc.user_id AND uc.class_id = c.class_id AND u.user_id = us.user_id AND uc.class_id = us.class_id');
-
-        $queryB = $db->query('
+       
+        $query = $db->query('
         WITH pretest AS (SELECT us.user_id, us.score as pretest, us.class_id FROM classes c, user_scores us WHERE c.pretest_id = us.test_id),
         posttest AS (SELECT us.user_id, us.score as posttest, us.class_id FROM classes c, user_scores us WHERE c.posttest_id = us.test_id),
         people AS (SELECT u.fname, u.lname, c.class_name, c.class_id, u.user_id FROM users u, classes c, user_classes uc WHERE uc.class_id = c.class_id AND uc.user_id = u.user_id)
@@ -51,7 +57,7 @@ class TestModel extends Model{
         LEFT JOIN posttest ON posttest.user_id = people.user_id AND posttest.class_id = people.class_id
         ORDER BY people.class_id');
 
-        $results = $queryB->getResult();
+        $results = $query->getResult();
         return $results;
     }
 
@@ -173,8 +179,13 @@ class TestModel extends Model{
         $db = \Config\Database::connect();
         $query = $db->query('SELECT score FROM user_scores WHERE user_id ='.$user_id.' AND class_id = '.$class_id.' ORDER BY test_status');
         $results = $query->getResult();
-        $score['pretest'] = $results[0]->score;
-        $score['posttest'] = $results[1]->score;
+        if ($results){
+            $score['pretest'] = $results[0]->score;
+            $score['posttest'] = $results[1]->score;
+        } else {
+            $score['pretest'] = NULL;
+            $score['posttest'] = NULL;
+        }
         return $score;
     }
 

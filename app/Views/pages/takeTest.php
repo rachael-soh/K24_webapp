@@ -1,7 +1,4 @@
 
-
-<!-- Display the countdown timer in an element -->
-<p id="demo"></p>
 <script>
 
 // Set the date we're counting down to
@@ -27,29 +24,37 @@ var x = setInterval(function() {
   // If the count down is finished, write some text
   if (distance < 0) {
     clearInterval(x);
-    window.location.href = "http://localhost:8080/k24/public/TestReport/submitTest";
+    window.location.href = "<?php echo site_url('TestReport/submitTest')?>";
   }
 }, 1000);
 </script>
 
+<!-- Display the countdown timer in an element -->
+<div class="row m-1 p-1"> 
+<h4>Time Left:</h4> 
+<h4 id="demo"></h4>
+</div> 
 
-<form method="post" action="/k24/public/Questions/submitQuestion">
+
+<form method="post" action="<?php echo site_url('questions/submitQuestion')?>">
 <div class = "card">
 <div class="card-body">
-    <h5 class="card-title"><?php echo key($qns[$index])?></h5>
+    <h5 class="card-title"><?php echo $index + 1; echo '. '; echo key($qns[$index])?></h5>
     <p class="card-text">
         <?php foreach($qns[$index][key($qns[$index])] as $option){?> 
             <div class="form-check">
             <input class="form-check-input" required type="radio" name="option" id="option" value="<?php echo $option->option_id?>">
             <label class="form-check-label" for="option">
-                <?php echo $option->option_desc;?>
+                <?php echo $option->option_desc ?>
             </label>
             </div>
         <?php }
         ?>
     </p>
-    <button class="btn btn-secondary <?php echo $index == $end-1? ' d-none ' : ''; ?> " type="submit" name="submit" value=<?php echo $index ?>>Submit Question</button>
-    <button class="btn btn-secondary <?php echo $index != $end-1? ' d-none ' : ''; ?> " type="submit" name="submit" value=<?php echo $index ?>>Submit Exam</button>
+    <div class="card-block text-center">
+    <button class="btn btn-outline-success w-50 <?php echo $index == $end-1? ' d-none ' : ''; ?> " type="submit" name="submit" value=<?php echo $index ?>>Submit Question</button>
+    <button class="btn btn-outline-success w-50 <?php echo $index != $end-1? ' d-none ' : ''; ?> " type="submit" name="submit" value=<?php echo $index ?>>Submit Exam</button>
+    </div>
   </div>
 </div>
 </form>

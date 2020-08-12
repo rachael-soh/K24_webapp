@@ -1,10 +1,22 @@
-<li class="breadcrumb-item"> <a href="/k24/public/Classes/viewClass/<?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
-<li class="breadcrumb-item"> <a href="/k24/public/Notes/notes"> Notes </a> </li>
+<li class="breadcrumb-item text-light"> <a class="text-light" href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
+<li class="breadcrumb-item text-light"> <a class="text-light" href="<?php echo site_url('notes/notes')?>"> Notes </a> </li>
 <li class="breadcrumb-item active" aria-current="page">Edit Note</li>
 </ol>
 </nav>
 
-<form method="post" action="/k24/public/Notes/editNote" enctype="multipart/form-data">
+<!-- errors & success-->
+<?php if (session()->get('success')): ?>
+    <div class="alert alert-success" role="alert">
+    <?= session()->get('success') ?>
+    </div>
+<?php endif; ?>  
+<?php  if (session()->get('error')): ?>
+<div class="alert alert-danger" role="alert">
+<?= session()->get('error') ?>
+</div>
+<?php endif; ?>
+
+<form method="post" action="<?php echo site_url('notes/editNote')?>" enctype="multipart/form-data">
 <?php $note = session()->get('note')?>
 <div class="form-group row">
     <label for="note_name" class="col-sm-2 col-form-label">Note name</label>

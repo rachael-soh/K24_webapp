@@ -2,8 +2,20 @@
 </ol>
 </nav>
 
+<!-- errors & success-->
+<?php if (session()->get('success')): ?>
+    <div class="alert alert-success" role="alert">
+    <?= session()->get('success') ?>
+    </div>
+<?php endif; ?>  
+<?php  if (session()->get('error')): ?>
+<div class="alert alert-danger" role="alert">
+<?= session()->get('error') ?>
+</div>
+<?php endif; ?>
+
 <nav class="navbar navbar-light bg-light">
-<form method='get' action='/k24/public/Classes/classAction' class="form-inline">
+<form method='get' action='<?php echo site_url('classes/classAction')?>' class="form-inline">
     <input class="form-control col-8" type="search" id = "search_desc" name="search_desc" placeholder="Search" aria-label="Search">
     <button class="btn btn-outline-success col-2" type="submit" name="search_button" value="1"> <i class="fas fa-search"></i> </button>
     <button class="btn btn-outline-success col-2" type="submit" name="all" value="2"> <i class="fas fa-list"></i> </button>
@@ -26,7 +38,7 @@ if (isset($classL)){
         echo $class->start_time.'  -  '.$class->end_time;
         ?>
     </p>
-    <a href = "/k24/public/Classes/viewClass/ <?php echo $class->class_id?>">
+    <a href = "<?php echo site_url('classes/viewClass/')?><?php echo $class->class_id?>">
     <button class="btn btn-lg float-right" type="submit" name="view" value="<?php echo $class->class_id?>"><i class="fas fa-eye"></i></button>
     </a>
 </div>

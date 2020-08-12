@@ -1,42 +1,48 @@
 <li class="breadcrumb-item active" aria-current="page"><?php echo 'Create class' ?></li>
 </ol>
 </nav>
+<!-- errors & success-->
+<?php if (session()->get('success')): ?>
+    <div class="alert alert-success" role="alert">
+    <?= session()->get('success') ?>
+    </div>
+<?php endif; ?>  
+<?php  if (session()->get('error')): ?>
+<div class="alert alert-danger" role="alert">
+<?= session()->get('error') ?>
+</div>
+<?php endif; ?>
 
-<form name="edit" method="post" action="/k24/public/Classes/create">
+<form name="edit" method="post" action="<?php echo site_url('classes/create')?>">
     <h2 class="col-sm-10">Create New Class</h2>
-    <?php if (session()->get('success')): ?>
-          <div class="alert alert-success" role="alert">
-            <?= session()->get('success') ?>
-          </div>
-        <?php endif; ?>
     <div class="form-group row">
     <label for="class_name" class="col-sm-2 col-form-label">Class Name</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="class_name" name="class_name" >
+      <input type="text" class="form-control" id="class_name" name="class_name" value = "<?= set_value('class_name') ?>"?>
     </div>
   </div>
   <div class="form-group row">
     <label for="description" class="col-sm-2 col-form-label">Description</label>
     <div class="col-sm-10">
-      <input type="text" class="form-control" id="description" name="description">
+      <input type="text" class="form-control" id="description" name="description" value = "<?= set_value('description') ?>">
     </div>
   </div>
 
   <div class="form-group row">
     <label for="call_link" class="col-sm-2 col-form-label">Call link</label>
     <div class="col-sm-10">
-      <input type="url" class="form-control" id="call_link" name="call_link" >
+      <input type="url" class="form-control" id="call_link" name="call_link" value = "<?= set_value('call_link') ?>">
     </div>
   </div>
 
   <div class="form-group row">
     <label for="start_time" class="col-sm-2 col-form-label">Start Time</label>
     <div class="col-sm-4">
-    <input type="time" class="form-control" name="start_time" id="start_time"> 
+    <input type="time" class="form-control" name="start_time" id="start_time" value = "<?= set_value('start_time') ?>"> 
     </div>
     <label for="end_time" class="col-sm-2 col-form-label">End Time</label>
     <div class="col-sm-4">
-    <input type="time" class="form-control" name="end_time" id="end_time">    
+    <input type="time" class="form-control" name="end_time" id="end_time" value = "<?= set_value('end_time') ?>">    
     </div>
     </div>
   </div>
@@ -70,11 +76,11 @@
   <div class="form-group row">
     <label for="start_date" class="col-sm-2 col-form-label">Start Date</label>
     <div class="col-sm-4"> 
-        <input type="date" class="form-control" id = "start_date" name="start_date"> 
+        <input type="date" class="form-control" id = "start_date" name="start_date" value = "<?= set_value('start_date') ?>"> 
     </div>
     <label for="end_date" id = "end_date" style="display:none" class="col-sm-2 col-form-label"> End Date</label>
     <div class="col-sm-4" id = "end_date1" name="end_date_1" style="display:none">
-    <input type="date" class="form-control" id = "end_date" name="end_date"> 
+    <input type="date" class="form-control" id = "end_date" name="end_date" value = "<?= set_value('end_date') ?>"> 
     </div>
     </div>
   </div>

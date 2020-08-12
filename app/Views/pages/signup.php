@@ -4,7 +4,7 @@
         	<div class="container">
 				<h3> Sign up </h3>
 				<hr>
-                <form class="" action="/k24/public/pages/signup" method="post">
+                <form class="" action="<?php echo site_url('pages/signup')?>" method="post">
                     <div class = "row">
                         <div class="col-12 col-sm-6">
                             <div class="form-group">

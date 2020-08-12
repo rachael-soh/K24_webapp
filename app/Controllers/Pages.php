@@ -30,9 +30,12 @@ class Pages extends BaseController
                 $model = new UserModel();
 				$user = $model->where('email', $this->request->getVar('email'))
                                 ->first();
-                                
-				$this->setUserSession($user);
-				return redirect()->to('/k24/public/dashboard');
+                if ($user['user_status'] == 0 ){
+                    session()->setFlashdata('error', "Inactivated account");
+                } else {
+                    $this->setUserSession($user);
+				    return redirect()->to('/k24/public/dashboard');
+                }	
             }
         }
         echo view("templates/dashboard-header", $data);

@@ -1,7 +1,19 @@
-<li class="breadcrumb-item"><a class="text-light" href="/k24/public/Dashboard/manageUsers">Manage User & Permission</a></li>
+<li class="breadcrumb-item"><a class="text-light" href="<?php echo site_url('dashboard/manageUsers')?>">Manage User & Permission</a></li>
 <li class="breadcrumb-item active" aria-current="page">User Role</li>
 </ol>
 </nav>
+
+<!-- errors & success-->
+<?php if (session()->get('success')): ?>
+    <div class="alert alert-success" role="alert">
+    <?= session()->get('success') ?>
+    </div>
+<?php endif; ?>  
+<?php  if (session()->get('error')): ?>
+<div class="alert alert-danger" role="alert">
+<?= session()->get('error') ?>
+</div>
+<?php endif; ?>
 
 <div class=" table-responsive">
 <table class="table">
@@ -15,12 +27,12 @@
     </tr>
 </thead>
 
-<form method='post' action='/k24/public/ManageUsers/userRoles'>
+<form method='post' action='<?php echo site_url('ManageUsers/userRoles')?>'>
 <div class="btn-group d-flex" role="group" aria-label="Basic example">
-  <button type="submit" class="btn btn-outline-secondary" name="action" value='allTab'>All</button>
-  <button type="submit" class="btn btn-outline-secondary" name="action" value='adminTab'>Admin</button>
-  <button type="submit" class="btn btn-outline-secondary" name="action" value='hostTab'>Host</button>
-  <button type="submit" class="btn btn-outline-secondary" name="action" value='pesertaTab'>Peserta</button>
+  <button type="submit" class="btn btn-outline-success <?php echo session()->get('tab')=='all'? 'active' : ''?>" name="action" value='allTab'>All</button>
+  <button type="submit" class="btn btn-outline-success <?php echo session()->get('tab')=='admin'? 'active' : ''?>" name="action" value='adminTab'>Admin</button>
+  <button type="submit" class="btn btn-outline-success <?php echo session()->get('tab')=='host'? 'active' : ''?>" name="action" value='hostTab'>Host</button>
+  <button type="submit" class="btn btn-outline-success <?php echo session()->get('tab')=='peserta'? 'active' : ''?>" name="action" value='pesertaTab'>Peserta</button>
 </div>
 </form>
 
@@ -32,22 +44,20 @@
         <td ><?php echo $user->email; ?> </td>
 
         <td >
-        
+        <form method='post' action='<?php echo site_url('ManageUsers/userRoles')?>'>
         
         <select class="custom-select custom-select-sm " name="newrole">
             <option value="1" <?php echo $user->role_id == 1? 'selected="selected"' : ''; ?>>Admin</option>
             <option value="2" <?php echo $user->role_id == 2? 'selected="selected"' : ''; ?>>Host</option>
             <option value="3" <?php echo $user->role_id == 3? 'selected="selected"' : ''; ?>>Peserta</option>
         </select>
-        
-
 
         </td>
         <td >
-            <form method='post' action='/k24/public/ManageUsers/userRoles'>
+            
             <div class="btn-group-vertical btn-group-sm d-flex">
-             <button type="submit" name="save" value="<?php echo $user->user_id ?>" class="btn btn-primary"> Save </button>
-             <button type="submit" name="delete" value="<?php echo $user->user_id ?>" class="btn btn-danger <?php echo $user->user_status != 1? "d-none": "" ?>"> Delete </button>
+             <button type="submit" name="save" value="<?php echo $user->user_id ?>" class="btn btn-primary"> <i class="fa fa-save" aria-hidden="true"></i> </button>
+             <button type="submit" name="delete" value="<?php echo $user->user_id ?>" class="btn btn-danger  <?php echo $user->user_status != 1? "d-none": "" ?>"> <i class="fa fa-times" aria-hidden="true"></i> </button>
              <button type="submit" name="activate" value="<?php echo $user->user_id ?>" class="btn btn-success <?php echo $user->user_status == 1? "d-none": "" ?>"> Activate </button>
              </div>
              </form>

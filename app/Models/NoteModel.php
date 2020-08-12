@@ -19,6 +19,10 @@ class NoteModel extends Model{
 
         $query = $db->query('INSERT INTO notes (class_id,note_name, note_doc, note_path) VALUES ('.$note_data['class_id'].',"'.$note_data['note_name'].'","'.$note_data['note_doc'].'","'.$note_data['path'].'")');
     }
+    public function deleteNote($note_id){
+        $db = \Config\Database::connect();
+        $query = $db->query('DELETE FROM notes WHERE note_id = '.$note_id);
+    }
     public function editNote($note_id){
         $db = \Config\Database::connect();
         foreach ($data as $key=>$value){

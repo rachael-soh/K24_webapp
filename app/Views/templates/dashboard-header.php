@@ -29,25 +29,25 @@
       <!-- Navbar has dashboard, profile & lg out if logged in-->
       <ul class="navbar-nav mr-auto">
         <li class="nav-item <?= ($uri->getSegment(1) == 'dashboard' ? 'active' : null) ?> ">
-          <a class="nav-link" href="/k24/public/dashboard">Dashboard</a>
+          <a class="nav-link" href="<?php echo site_url('dashboard')?>">Dashboard</a>
         </li>
         <li class="nav-item <?= ($uri->getSegment(1) == 'profile' ? 'active': null)?>" >
-          <a class="nav-link" href="/k24/public/profile">Profile</a>
+          <a class="nav-link" href="<?php echo site_url('pages/profile')?>">Profile</a>
         </li>
       </ul>  
       <ul class="navbar-nav my-2 my-lg-0">
         <li class="nav-item">
-        <a class="nav-link" href="/k24/public/logout">Log out</a>
+        <a class="nav-link" href="<?php echo site_url('pages/logout')?>">Log out</a>
         </li> 
       </ul>
     <?php else: ?>
       <!-- Navbar has sign up or log in if not logged in-->
       <ul class="navbar-nav mr-auto">
         <li class="nav-item <?= ($uri->getSegment(1) == '' ? 'active': null) ?>" >
-          <a class="nav-link" href="/k24/public/">Login</a>
+          <a class="nav-link" href="<?php echo site_url('pages')?>">Login</a>
         </li>
         <li class="nav-item <?= ($uri->getSegment(1) == 'signup' ? 'active': null) ?>" >
-          <a class="nav-link" href="/k24/public/signup">Sign up</a>
+          <a class="nav-link" href="<?php echo site_url('pages/signup')?>">Sign up</a>
         </li>
       </ul>  
     <?php endif;?>

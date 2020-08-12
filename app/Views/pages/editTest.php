@@ -1,15 +1,26 @@
-<li class="breadcrumb-item"> <a href="/k24/public/Classes/viewClass/<?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
-<li class="breadcrumb-item"> <a href="/k24/public/TestReport/tests" > Tests </a></li>
+<li class="breadcrumb-item"> <a class="text-light" href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
+<li class="breadcrumb-item"> <a class="text-light" href="<?php echo site_url('TestReport/tests')?>" > Tests </a></li>
 <li class="breadcrumb-item active" aria-current="page">Test Editing</li>
 </ol>
 </nav>
+<!-- errors & success-->
+<?php if (session()->get('success')): ?>
+    <div class="alert alert-success" role="alert">
+    <?= session()->get('success') ?>
+    </div>
+<?php endif; ?>  
+<?php  if (session()->get('error')): ?>
+<div class="alert alert-danger" role="alert">
+<?= session()->get('error') ?>
+</div>
+<?php endif; ?>
 
-<form method="post" action="/k24/public/TestReport/questionAction">
+<form method="post" action="<?php echo site_url('TestReport/questionAction')?>">
 <div class="card">
 <div class="form-group row <?php echo $test_status == 1? 'd-none' : ''?>">
     <label for="test_date" class="col-4 "> Test Date</label>
     <div class="col-8"> 
-        <input type="text" id = "test_date" name= "test_date" placeholder="<?php echo $test_date;?>" value="<?php echo $test_date;?>"
+        <input class="form-control" type="text" id = "test_date" name= "test_date" placeholder="<?php echo $test_date;?>" value="<?php echo $test_date;?>"
             onfocus="(this.type='date')"
             onblur="(this.type='text')"> 
     </div>
@@ -18,14 +29,14 @@
 <div class="form-group row <?php echo $test_status == 1? 'd-none' : ''?>">
     <label for="end_time" class="col-4 ">Starting Time:</label>
     <div class="col-8">
-    <input type="text" name="start_time" placeholder="<?php echo $start_time;?>" value="<?php echo $start_time;?>"
+    <input class="form-control" type="text" name="start_time" placeholder="<?php echo $start_time;?>" value="<?php echo $start_time;?>"
         onfocus="(this.type='time')"
         onblur="(this.type='text')"> 
     </div>
     
     <label for="end_time" class="col-4 ">Ending Time:</label>
     <div class="col-8">
-    <input type="text" name="end_time" placeholder="<?php echo $end_time;?>" value="<?php echo $end_time;?>"
+    <input class="form-control" type="text" name="end_time" placeholder="<?php echo $end_time;?>" value="<?php echo $end_time;?>"
         onfocus="(this.type='time')"
         onblur="(this.type='text')"> 
     </div>

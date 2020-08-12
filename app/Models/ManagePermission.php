@@ -22,6 +22,17 @@ class ManagePermission extends Model{
         return $results;
     }
 
+    public function isHost($user_id, $class_id){
+        $db = \Config\Database::connect();
+        $query =  $db->query('SELECT * FROM user_classes WHERE user_id='.$user_id.' AND class_id='.$class_id);
+        $res = $query->getRow();
+        if ($res){
+            return $res->host;
+        } else {
+            return ;
+        };
+    }
+
     public function setPerms(array $newPerms, int $role_id){
         $db = \Config\Database::connect();
         $builder = $db->table('role_perm');

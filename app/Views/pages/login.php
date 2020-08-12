@@ -9,7 +9,12 @@
 						<?=session()->get('success') ?>
 					</div>
 				<?php endif; ?>
-				<form class="" action="/k24/public/" method="post">
+				<?php if (session()->get('error')): ?>
+				<div class="alert alert-danger" role="alert">
+				<?= session()->get('error') ?>
+				</div>
+				<?php endif; ?>
+				<form class="" action="<?php echo site_url("pages/index")?>" method="post">
 						<div class="form-group">
 							<label for="email">Email</label>
 							<input type="text" class="form-control" id="email" name="email" placeholder="Email" value = "<?= set_value('email') ?>">

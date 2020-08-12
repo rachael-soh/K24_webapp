@@ -9,7 +9,13 @@ class Questions extends BaseController
     public function editQuestion(){
         $perms = new ManagePermission();
         $user_id = session()->get('user_id');
-        $allowed = $perms->getUserPerms($user_id);
+        $class_id = session()->get('class_id');
+        $role_id = session()->get('role_id');
+        if ($perms->isHost($user_id, $class_id) == 1 && $role_id == 3){
+            $allowed = $perms->fetchRolePerms(2);
+        } else {
+            $allowed = $perms->getUserPerms($user_id);
+        }
 
         $questionModel = new QuestionModel();
         $test_id = session()->get('test_id');
@@ -18,7 +24,6 @@ class Questions extends BaseController
         if (in_array(12, $allowed)){
             // but what if we submit? 
             if ($this->request->getMethod()=="post"){
-                
                 // changes the question itself
                 if ($this->request->getPost("question")){
                     $newQn = $this->request->getPost("question");
@@ -42,6 +47,8 @@ class Questions extends BaseController
                     $isans = $this->request->getPost("newAns");
                     $questionModel->addOptions($newOptions, $isans, $question_id);
                 }
+                session()->setFlashdata('success', 'Question edited!');
+                #return redirect()->to(site_url('TestReport/editTest'));
             } 
             $question = $questionModel->getQuestion($question_id);
             $options = $questionModel->getOptions($question_id);
@@ -60,31 +67,58 @@ class Questions extends BaseController
         $questionModel = new QuestionModel();
         $testModel = new TestModel();
 
-        // get rid of the question & options
-        $question_id = session()->get('question_id');
-        $questionModel->deleteQuestion($question_id);
+        $perms = new ManagePermission();
+        $user_id = session()->get('user_id');
+        $class_id = session()->get('class_id');
+        $role_id = session()->get('role_id');
+        if ($perms->isHost($user_id, $class_id) == 1 && $role_id == 3){
+            $allowed = $perms->fetchRolePerms(2);
+        } else {
+            $allowed = $perms->getUserPerms($user_id);
+        }
 
-        // display new set of questions
-        $test_id = session()->get('test_id');
-        $test = $testModel->getTest($test_id);
-        $questions = $testModel->getQuestions($test_id);
+        if (in_array(12, $allowed)){
+            // get rid of the question & options
+            $question_id = session()->get('question_id');
+            $questionModel->deleteQuestion($question_id);
 
-        // placeholders & new questions
-        $data['test_date'] = $test->test_date;
-        $data['start_time'] = $test->start_time; 
-        $data['end_time'] = $test->end_time; 
-        $data['questions'] = $questions;
-        return redirect()->to('/k24/public/TestReport/editTest');
+            // display new set of questions
+            $test_id = session()->get('test_id');
+            $test = $testModel->getTest($test_id);
+            $questions = $testModel->getQuestions($test_id);
 
+            // placeholders & new questions
+            $data['test_date'] = $test->test_date;
+            $data['start_time'] = $test->start_time; 
+            $data['end_time'] = $test->end_time; 
+            $data['questions'] = $questions;
+            session()->setFlashdata('success', 'Deleted question!');
+            return redirect()->to('/k24/public/TestReport/editTest');
+        } else {
+            session()->setFlashdata('error', 'Not allowed to edit test!');
+        }
         echo view("templates/header");
         echo view("pages/editTest", $data);
         echo view("templates/footer");
     }
     public function addQuestion(){
-        $questionModel = new QuestionModel();
-        $test_id = session()->get('test_id');
-        $question_id = $questionModel->addQuestion($test_id);
-        session()->set('question_id', $question_id);
+        $perms = new ManagePermission();
+        $user_id = session()->get('user_id');
+        $class_id = session()->get('class_id');
+        $role_id = session()->get('role_id');
+        if ($perms->isHost($user_id, $class_id) == 1 && $role_id == 3){
+            $allowed = $perms->fetchRolePerms(2);
+        } else {
+            $allowed = $perms->getUserPerms($user_id);
+        }
+        if (in_array(12, $allowed)){
+            $questionModel = new QuestionModel();
+            $test_id = session()->get('test_id');
+            $question_id = $questionModel->addQuestion($test_id);
+            session()->set('question_id', $question_id);
+        } else {
+            session()->setFlashdata('error', 'Not allowed to edit test!');
+        }
 
         echo view("templates/header");
         echo view("pages/editQuestion");
@@ -92,46 +126,58 @@ class Questions extends BaseController
     }
 
     // TAKE A TEST
-    
     public function submitQuestion(){
         $questionModel = new QuestionModel();
         $testModel = new TestModel();
 
-        // these are questions for that exam
-        $test_id = session()->get('test_id'); 
-        $test = $testModel->getTest($test_id);
-        $questions = $testModel->getQuestions($test_id);
-
-        // keep array of qns
-        foreach ($questions as $question){
-            $data['qns'][] = ["$question->question" => $questionModel->getOptions($question->question_id)];
-        }
-        $end = count($questions);
-        $data['end'] = $end;
-
-        // last question!! Time to submit
-        if ($this->request->getPost("submit")  == $end - 1){
-            $option_id = $this->request->getPost("option");
-            $option = $questionModel->getOption($option_id);
-            $questionModel->submitAnswer($option->question_id, $option);
-            // submit exam 
-            return redirect()->to("/k24/public/TestReport/submitTest");
-
-        } 
-        // otherwise, keep going
-        else if ($this->request->getPost("submit")  < $end-1){
-            $data['index'] = $this->request->getPost("submit") + 1;
-            session()->set('qnNum', $this->request->getPost("submit"));
-            $option_id = $this->request->getPost("option");
-            $option = $questionModel->getOption($option_id);
-            $questionModel->submitAnswer($option->question_id, $option);
-        } 
-        // just refreshing. no submission
-        else {
-            $data['index'] = session()->get('qnNum') + 1;
+        $perms = new ManagePermission();
+        $user_id = session()->get('user_id');
+        $class_id = session()->get('class_id');
+        $role_id = session()->get('role_id');
+        if ($perms->isHost($user_id, $class_id) == 1 && $role_id == 3){
+            $allowed = $perms->fetchRolePerms(2);
+        } else {
+            $allowed = $perms->getUserPerms($user_id);
         }
 
-        //echo session()->get('qnNum').' and '.$data['index'];
+        if (in_array(13, $allowed)){
+
+            // these are questions for that exam
+            $test_id = session()->get('test_id'); 
+            $test = $testModel->getTest($test_id);
+            $questions = $testModel->getQuestions($test_id);
+
+            // keep array of qns
+            foreach ($questions as $question){
+                $data['qns'][] = ["$question->question" => $questionModel->getOptions($question->question_id)];
+            }
+            $end = count($questions);
+            $data['end'] = $end;
+
+            // last question!! Time to submit
+            if ($this->request->getPost("submit")  == $end - 1){
+                $option_id = $this->request->getPost("option");
+                $option = $questionModel->getOption($option_id);
+                $questionModel->submitAnswer($option->question_id, $option);
+                // submit exam 
+                return redirect()->to("/k24/public/TestReport/submitTest");
+
+            } 
+            // otherwise, keep going
+            else if ($this->request->getPost("submit")  < $end-1){
+                $data['index'] = $this->request->getPost("submit") + 1;
+                session()->set('qnNum', $this->request->getPost("submit"));
+                $option_id = $this->request->getPost("option");
+                $option = $questionModel->getOption($option_id);
+                $questionModel->submitAnswer($option->question_id, $option);
+            } 
+            // just refreshing. no submission
+            else {
+                $data['index'] = session()->get('qnNum') + 1;
+            }
+        } else {
+            session()->setFlashdata('error', 'Not allowed to take test!');
+        }
         echo view("templates/dashboard-header");
         echo view("pages/takeTest", $data);
         echo view("templates/footer");

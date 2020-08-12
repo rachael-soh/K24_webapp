@@ -2,7 +2,7 @@
 use CodeIgniter\Model;
 
 class ClassModel extends Model{
-    public function addClass(array $newData){
+    public function addClass(array $newData, $user_id){
         $db = \Config\Database::connect();
         $builder = $db->table('classes');
         $builder->insert($newData);
@@ -10,7 +10,9 @@ class ClassModel extends Model{
         // insert into class
         $db->query('INSERT INTO tests (test_id, class_id, test_status) VALUES ('.$newData['pretest_id'].','.$classID.',1)');
         $db->query('INSERT INTO tests (test_id, class_id, test_status) VALUES ('.$newData['posttest_id'].','.$classID.',2)');
+        $db->query('INSERT INTO user_classes (user_id, class_id, host) VALUES ('.$user_id.','.$classID.','.'1)');
     }
+    
     public function autoinc(){
         $db = \Config\Database::connect();
         $res = $db->query('SELECT MAX(test_id) as id FROM tests');
@@ -41,25 +43,33 @@ class ClassModel extends Model{
     }
     public function removePeserta($user_id, $class_id){
         $db = \Config\Database::connect();
-        $query = $db->query('DELETE FROM user_classes WHERE user_id='.$user_id.'AND class_id='.$class_id);
+        $query = $db->query('DELETE FROM user_classes WHERE user_id='.$user_id.' AND class_id='.$class_id);
     }
     public function getClasses(){
         $db = \Config\Database::connect();
         helper('Time');
 
         // check the class statuses before getting all
-        $query = $db->query('SELECT class_id,start_date,class_status, end_date FROM classes');
+        $query = $db->query('SELECT * FROM classes');
         $results = $query->getResult();
 
         foreach($results as $result){
+            $end = date('Y-m-d H:i:s', strtotime("$result->end_date $result->end_time"));
+            $start = date('Y-m-d H:i:s', strtotime("$result->start_date $result->start_time"));
+
             if ($result->class_status == 2){
                 // already inactive. leave it
-            } else if (isBeforeToday($result->end_date)){
+                // if tests empty? fail them score = 0
+                $query = $db->query('UPDATE user_scores SET score = 0 WHERE score IS NULL and class_id='.$result->class_id);
+
+            } else if (isBeforeToday($end)){
                 //class completely inactive
                 $query = $db->query('UPDATE classes SET class_status = 2 WHERE class_id='.$result->class_id);
                 // inactivate test too 
                 $query = $db->query('UPDATE tests SET test_status = 3 WHERE class_id='.$result->class_id);
-            } else if (isBeforeToday($result->start_date)){
+                // if tests empty? fail them score = 0
+                $query = $db->query('UPDATE user_scores SET score = 0 WHERE score IS NULL and class_id='.$result->class_id);
+            } else if (isBeforeToday($start)){
                 $query = $db->query('UPDATE classes SET class_status = 1 WHERE class_id='.$result->class_id);
             } else {
                 //class still open to join! 
@@ -94,7 +104,18 @@ class ClassModel extends Model{
             return False;
         }
     }
+    public function joinedClass($user_id, $class_id){
+        $db = \Config\Database::connect();
+        $query = $db->query('SELECT class_id FROM user_classes WHERE user_id='.$user_id);
+        $classes = $query->getResult();
 
+        foreach($classes as $c){
+            if ($class_id == $c->class_id){
+                return True;
+            }
+        }
+        return False;
+    }
     public function noTimeConflict($user_id, $newClass_id){
         $db = \Config\Database::connect();
         // get all classes of this user
@@ -121,12 +142,11 @@ class ClassModel extends Model{
     public function joinClass($user_id, $newClass_id){
         $db = \Config\Database::connect();
         // When joining a class, we add it to user_classes table & also a score for them in the user_scores
-        $db->query('INSERT INTO user_classes (user_id, class_id) VALUES ('.$user_id.','.$newClass_id.')');
+        $db->query('INSERT INTO user_classes (user_id, class_id, host) VALUES ('.$user_id.','.$newClass_id.',0)');
         $query = $db->query('SELECT * FROM classes WHERE class_id ='.$newClass_id);
         $class = $query->getRow();
         $db->query('INSERT INTO user_scores (user_id, class_id, test_id, test_status) VALUES ('.$user_id.','.$newClass_id.','.$class->pretest_id.',1)');
         $db->query('INSERT INTO user_scores (user_id, class_id, test_id, test_status) VALUES ('.$user_id.','.$newClass_id.','.$class->posttest_id.',2)');
-
     }
 
     public function removeClass($newClass_id){
@@ -175,15 +195,7 @@ class ClassModel extends Model{
         }
         return $data;
     }
-    private function randomColor(){
-        $rgbColor = array();
-        //Create a loop.
-        foreach(array('r', 'g', 'b') as $color){
-            //Generate a random number between 0 and 255.
-            $rgbColor[$color] = mt_rand(0, 255);
-        return implode('',$rgbColor);
-}
-    }
+
     public function mySchedule($user_id){
         // Get classes of a user in JSON encode format to turn into schedule
         $db = \Config\Database::connect();
@@ -191,15 +203,43 @@ class ClassModel extends Model{
         $results = $query->getResult();
         
         foreach ($results as $result){
-            $data[] = array(
-                'id'=>$result->class_id,
-                'title'=>$result->class_name,
-                'start'=>date('Y-m-d H:i:s', strtotime("$result->start_date $result->start_time")),
-                'end'=>date('Y-m-d H:i:s', strtotime("$result->end_date $result->end_time"))
-            );
+            if ($result->recurring == '1'){
+                $data[] = array(
+                    'id'=>$result->class_id,
+                    'title'=>$result->class_name,
+                    'start'=>date('Y-m-d',strtotime($result->start_date)).' '.date('H:i:s', strtotime($result->start_time)),
+                    'end'=>date('Y-m-d',strtotime($result->end_date)).' '.date('H:i:s', strtotime($result->end_time)),
+                    'allDay'=>False,
+                    'color'=>$this->randomColor(),
+                );
+            } else {
+                $data[] = array(
+                    'id'=>$result->class_id,
+                    'title'=>$result->class_name,
+                    'startTime'=>$result->start_time,
+                    'endTime'=>$result->end_time,
+                    'startRecur'=>$result->start_date,
+                    'endRecur'=>$result->end_date,
+                    'daysOfWeek'=> str_split($result->dow),
+                    'allDay'=>False,
+                    'backgroundColor'=>$this->randomColor(),
+                );
+            }
         }
         return $data;
     }  
+
+    private function randomColor(){
+        $rgbColor = array();
+        $colors = array('r', 'g', 'b');
+        //Create a loop.
+        foreach($colors as $color){
+            //Generate a random number between 0 and 255.
+            $rgbColor[$color] = mt_rand(0, 255);
+        }
+        return implode('',$rgbColor);
+    }
+    
 
     public function userClasses($user_id){
         // Get class of a user

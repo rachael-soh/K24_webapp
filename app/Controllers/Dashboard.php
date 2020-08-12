@@ -13,8 +13,7 @@ class Dashboard extends BaseController
     }
 
     public function manageUsers(){
-        $data = [];
-        echo view("templates/header", $data);
+        echo view("templates/header");
         echo view("pages/manageUsers");
         echo view("templates/footer");
     }
@@ -30,15 +29,13 @@ class Dashboard extends BaseController
     }
 
     public function createClass(){
-        $data = [];
-        echo view("templates/header", $data);
+        echo view("templates/header");
         echo view("pages/createClass");
         echo view("templates/footer");
     }
 
     public function exploreClass(){
-        $data = [];
-        echo view("templates/header", $data);
+        echo view("templates/header");
         echo view("pages/exploreClasses");
         echo view("templates/footer");
     }

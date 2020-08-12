@@ -9,7 +9,13 @@
             <?= session()->get('success') ?>
           </div>
         <?php endif; ?>
-        <form class="" action="/k24/public/Pages/profile" method="post">
+        <?php if (session()->get('error')): ?>
+          <div class="alert alert-danger" role="alert">
+            <?= session()->get('error') ?>
+          </div>
+        <?php endif; ?>
+
+        <form class="" action="<?php echo site_url('pages/profile')?>" method="post">
           <div class="row">
             <div class="col-12 col-sm-6">
               <div class="form-group">
