@@ -1,7 +1,9 @@
-<li class="breadcrumb-item"><a class="text-light" href="<?php echo site_url('dashboard/manageUsers')?>">Manage User & Permission</a></li>
-<li class="breadcrumb-item active" aria-current="page">Role Permissions</li>
+<li class="breadcrumb-item d-inline text-dark"><a class="text-dark" href="<?php echo site_url('dashboard/manageUsers')?>">Manage User & Permission</a></li>
+<li class="breadcrumb-item d-inline active" aria-current="page">Role Permissions</li>
 </ol>
-</nav>
+</div>
+</div>
+
 
 <!-- error & success -->
 <?php if (session()->get('success')): ?>

@@ -1,6 +1,7 @@
 <li class="breadcrumb-item active" aria-current="page">Manage User & Permission</li>
 </ol>
-</nav>
+</div>
+</div>
 
 <!-- errors & success-->
 <?php if (session()->get('success')): ?>

@@ -6,7 +6,8 @@ class Dashboard extends BaseController
     public function index(){
         $classModel = new ClassModel();
         $data['classes'] = $classModel->myClasses(session()->get('user_id'));
-        
+        session()->set('explore',0);
+
         echo view("templates/dashboard-header");
         echo view("pages/dashboard", $data);
         echo view("templates/footer");

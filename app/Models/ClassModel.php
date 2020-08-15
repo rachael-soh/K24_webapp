@@ -45,6 +45,7 @@ class ClassModel extends Model{
         $db = \Config\Database::connect();
         $query = $db->query('DELETE FROM user_classes WHERE user_id='.$user_id.' AND class_id='.$class_id);
     }
+    
     public function getClasses(){
         $db = \Config\Database::connect();
         helper('Time');
@@ -177,7 +178,7 @@ class ClassModel extends Model{
                     'start'=>date('Y-m-d',strtotime($result->start_date)).' '.date('H:i:s', strtotime($result->start_time)),
                     'end'=>date('Y-m-d',strtotime($result->end_date)).' '.date('H:i:s', strtotime($result->end_time)),
                     'allDay'=>False,
-                    'color'=>$this->randomColor(),
+                    'color'=>$result->color,
                 );
             } else {
                 $data[] = array(
@@ -189,7 +190,7 @@ class ClassModel extends Model{
                     'endRecur'=>$result->end_date,
                     'daysOfWeek'=> str_split($result->dow),
                     'allDay'=>False,
-                    'backgroundColor'=>$this->randomColor(),
+                    'backgroundColor'=>$result->color,
                 );
             }
         }
@@ -210,7 +211,7 @@ class ClassModel extends Model{
                     'start'=>date('Y-m-d',strtotime($result->start_date)).' '.date('H:i:s', strtotime($result->start_time)),
                     'end'=>date('Y-m-d',strtotime($result->end_date)).' '.date('H:i:s', strtotime($result->end_time)),
                     'allDay'=>False,
-                    'color'=>$this->randomColor(),
+                    'color'=>$result->color,
                 );
             } else {
                 $data[] = array(
@@ -222,24 +223,17 @@ class ClassModel extends Model{
                     'endRecur'=>$result->end_date,
                     'daysOfWeek'=> str_split($result->dow),
                     'allDay'=>False,
-                    'backgroundColor'=>$this->randomColor(),
+                    'backgroundColor'=>$result->color,
                 );
             }
         }
         return $data;
     }  
 
-    private function randomColor(){
-        $rgbColor = array();
-        $colors = array('r', 'g', 'b');
-        //Create a loop.
-        foreach($colors as $color){
-            //Generate a random number between 0 and 255.
-            $rgbColor[$color] = mt_rand(0, 255);
-        }
-        return implode('',$rgbColor);
+    public function rgba_color(){
+        $randomcolor = '#' . dechex(rand(256,16777215));
+        return $randomcolor;
     }
-    
 
     public function userClasses($user_id){
         // Get class of a user
@@ -256,8 +250,37 @@ class ClassModel extends Model{
     public function myClasses($user_id){
         // Get class of a user
         $db = \Config\Database::connect();
+        helper('Time');
+
         $query = $db->query('SELECT * FROM user_classes uc, classes c WHERE uc.class_id = c.class_id AND uc.user_id='.$user_id.' ORDER BY c.class_status');
-        return $query->getResult();    
+        $results = $query->getResult();    
+
+        foreach($results as $result){
+            $end = date('Y-m-d H:i:s', strtotime("$result->end_date $result->end_time"));
+            $start = date('Y-m-d H:i:s', strtotime("$result->start_date $result->start_time"));
+
+            if ($result->class_status == 2){
+                // already inactive. leave it
+                // if tests empty? fail them score = 0
+                $query = $db->query('UPDATE user_scores SET score = 0 WHERE score IS NULL and class_id='.$result->class_id);
+
+            } else if (isBeforeToday($end)){
+                //class completely inactive
+                $query = $db->query('UPDATE classes SET class_status = 2 WHERE class_id='.$result->class_id);
+                // inactivate test too 
+                $query = $db->query('UPDATE tests SET test_status = 3 WHERE class_id='.$result->class_id);
+                // if tests empty? fail them score = 0
+                $query = $db->query('UPDATE user_scores SET score = 0 WHERE score IS NULL and class_id='.$result->class_id);
+            } else if (isBeforeToday($start)){
+                $query = $db->query('UPDATE classes SET class_status = 1 WHERE class_id='.$result->class_id);
+            } else {
+                //class still open to join! 
+                $query = $db->query('UPDATE classes SET class_status = 0 WHERE class_id='.$result->class_id);
+            }
+        }
+        $query1 = $db->query('SELECT * FROM user_classes uc, classes c WHERE uc.class_id = c.class_id AND uc.user_id='.$user_id.' ORDER BY c.class_status');
+        $results1 = $query1->getResult();
+        return $results1;
     }
 }   
 

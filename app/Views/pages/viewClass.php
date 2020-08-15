@@ -1,6 +1,9 @@
+<li class="breadcrumb-item text-dark <?php echo session()->get('explore') == 1? '':'d-none'?>"> <a class="text-dark" href="<?php echo site_url('classes/explore')?>"> Explore </li></a>
+
 <li class="breadcrumb-item active" aria-current="page"><?php echo $class_info->class_name ?></li>
 </ol>
-</nav>
+</div>
+</div>
 
 <!-- errors -->
 <?php if (session()->get('success')): ?>
@@ -14,25 +17,21 @@
 </div>
 <?php endif; ?>
 
-
-
-<?php $bg_arr = array('bg-primary', 'bg-success','bg-danger','bg-danger','bg-info', 'bg-warning', 'bg-dark')?>
-<?php $color = $bg_arr[array_rand($bg_arr,1)]?>
-
-    <div class="card <?php echo $class_info->class_status != 2? ' text-white '.$color : 'text-white bg-secondary'; ?>">
+    <div style= "background-color: <?php echo $class_info->color?>" class="card <?php echo $class_info->class_status != 2? 'text-white': 'text-white bg-secondary'; ?>">
     <div class="card-body">
     <h5 class="card-title text-white text-center"><?php echo $class_info->class_name ?></h5>
     <p class="card-text text-white text-center">
         <?php 
         echo $class_info->description;
         echo '<br>';
-        echo $class_info->start_date.'  -  '.$class_info->end_date;
+        echo date('j F Y', strtotime($class_info->start_date)).'  -  '.date('j F Y', strtotime($class_info->end_date));
         echo '<br>';
-        echo $class_info->start_time.'  -  '.$class_info->end_time;
+        echo date('H:i', strtotime($class_info->start_time)).'  -  '.date('H:i', strtotime($class_info->end_time));
         ?>
     </p>
     <form method="get" action="<?php echo site_url('classes/classAction')?>">
     <button class="btn btn-lg text-white text-center <?php echo session()->get('joined') == 1? 'd-none' : '';  ?>" type="submit" name="join" value="<?php echo $class_info->class_id?>"><i class="fa fa-plus"></i></button>
+    <button class="btn btn-lg text-white text-center <?php echo session()->get('joined') == 1? '' : 'd-none';  ?>" type="submit" name="drop" value="<?php echo $class_info->class_id?>"><i class="fa fa-minus"></i></button>
     <button class="btn btn-lg text-white float-right text-center <?php echo session()->get('role_id') == 3 ? 'd-none' : ''; ?> "  type="submit" name="edit" value="<?php echo $class_info->class_id?>"><i class="fa fa-edit"></i></button>
     <form>
   </div>

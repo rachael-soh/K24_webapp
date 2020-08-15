@@ -1,7 +1,8 @@
-<li class="breadcrumb-item"> <a class="text-light" href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>" class="text-light"> <?php echo session()->get('class_name') ?> </a> </li>
+<li class="breadcrumb-item text-dark"> <a class="text-dark" href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>" class="text-dark"> <?php echo session()->get('class_name') ?> </a> </li>
 <li class="breadcrumb-item active" aria-current="page"><?php echo 'Edit class' ?></li>
 </ol>
-</nav>
+</div>
+</div>
 <!-- errors & success-->
 <?php if (session()->get('success')): ?>
   <div class="alert alert-success" role="alert">
@@ -15,8 +16,8 @@
 <?php endif; ?>
 
 <form name="edit" method="post" action="<?php echo site_url('classes/edit/')?><?php echo $class->class_id?>">
-    <h2 class="col-sm-10">Create New Class</h2>
-    
+    <h2 class="col-sm-10">Edit Class</h2>
+    <div class="container">
     <div class="form-group row">
     <label for="class_name" class="col-sm-2 col-form-label">Class Name</label>
     <div class="col-sm-10">
@@ -54,7 +55,7 @@
     </div>
     </div>
   </div>
-
+  <div class="container">
   <fieldset class="form-group">
     <div class="row">
       <legend class="col-form-label col-sm-2 pt-0">Recurring</legend>
@@ -80,7 +81,8 @@
       </div>
     </div>
   </fieldset>
-
+  </div>
+  <div class="container">
   <div class="form-group row">
     <label for="start_date" class="col-sm-2 col-form-label">Start Date</label>
     <div class="col-sm-10"> 
@@ -96,7 +98,8 @@
     </div>
     </div>
   </div>
-  
+  </div>
+  </div>
   <script type="text/javascript">
 
 
@@ -169,9 +172,9 @@ function getValue(x) {
       </div>
       </div>
   <?php endif; ?>
-  <div class="form-group row">
-    <div class="col-sm-10">
-      <button type="submit" value="create" class="btn btn-primary"> Create </button>
+  <div class="container">
+    <div class="form-row w-100">
+      <button type="submit" value="create" class="btn btn-success w-100"> Create </button>
     </div>
   </div>
 </form>

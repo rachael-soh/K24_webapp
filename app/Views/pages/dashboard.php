@@ -4,7 +4,7 @@
     <div class="col-12">
       <?php if (session()->get('role_id') == 1): ?>
         <!-- ADMIN -->
-        <div class="container">
+        <div class="container m-1 p-1">
         <h2>Hello, Admin </h2>
         </div>
         <ul class="list-group">
@@ -19,8 +19,8 @@
         
         <!-- BUTTON GROUP FOR EXPLORE & CREATE CLASS-->
         <div class="btn-group d-flex" role="group">
-        <a class="btn btn-outline-secondary w-100" href="<?php echo site_url('classes/explore')?>" role="button"><i class="fa fa-search"></i> Explore Classes</a>
-        <a class="btn btn-outline-secondary w-100" href="<?php echo site_url('classes/create')?>" role="button"><i class="fa fa-plus"></i> Create Classes</a>
+        <a class="btn btn-outline-secondary p-2  w-100" href="<?php echo site_url('classes/explore')?>" role="button"><i class="fa fa-search"></i> Explore Classes</a>
+        <a class="btn btn-outline-secondary p-2  w-100" href="<?php echo site_url('classes/create')?>" role="button"><i class="fa fa-plus"></i> Create Classes</a>
         </div>
 
         <!-- All sched-->
@@ -31,10 +31,10 @@
 
       <!-- HOST -->
       <?php elseif (session()->get('role_id') == 2): ?>
-        <div class="container">
-        <h2>Hello, <?php session()->get('fname')?> </h2>
+        <div class="container m-1 p-1">
+        <h2>Hello, <?php echo session()->get('fname')?> </h2>
         </div>
-        <div class="container p-2">
+        <div class="container p-0">
         </div> 
         <a href="<?php echo site_url('classes/myClasses')?>" class="h5 p-2 text-dark"> My Classes:</a>
         
@@ -42,25 +42,25 @@
         <div class="row flex-row flex-nowrap overflow-auto" >
         <?php foreach ($classes as $class){?>
           <?php $color = $bg_arr[array_rand($bg_arr,1)]?>
-          <div class="col-6">
+          <div class="col-10">
+          <a style = "text-decoration: none !important" class="text-dark" href = "<?php echo site_url('classes/viewClass/'); echo $class->class_id?>">
           <div class="card card-block">
-              <h5 class="card-header <?php echo $class->class_status != 2? ' text-white '.$color : 'text-white bg-secondary'; ?>"><?php echo $class->class_name ?></h5>
+              <h5 style= "background-color: <?php echo $class->color?>" class="card-header <?php echo $class->class_status != 2? ' text-white ' : 'text-white bg-secondary'; ?>"><?php echo $class->class_name ?></h5>
               <div class="card-body">
                   <p class="card-text"> <?php echo $class->description ?> </p>
-                  <a href = "<?php echo site_url('classes/viewClass/'); echo $class->class_id?>">
-                  <button style="border-radius: 60%; border-color:#D3D3D3" class = "btn float-right btn-outline-secondary"> <i class="fa fa-angle-right" ></i></button> 
-                  </a>
+                  <button style="border-radius: 60%;" class = "btn float-right btn-outline-light"> <i class="fa fa-angle-right" ></i></button> 
               </div>
           </div>
           </div>
+          </a>
         <?php }?>
         </div> 
         </div> 
         <!-- BUTTON GROUP FOR EXPLORE & CREATE CLASS-->
-        <ul class="list-group">
+        <ul class="list-group pt-1 mt-1">
         <div class="btn-group d-flex" role="group">
-        <a class="btn btn-outline-secondary w-100" href="<?php echo site_url('classes/explore')?>" role="button"><i class="fa fa-search"></i> Explore Classes</a>
-        <a class="btn btn-outline-secondary w-100" href="<?php echo site_url('classes/create')?>" role="button"><i class="fa fa-plus"></i> Create Classes</a>
+        <a class="btn btn-outline-secondary p-2 w-100" href="<?php echo site_url('classes/explore')?>" role="button"><i class="fa fa-search"></i> Explore Classes</a>
+        <a class="btn btn-outline-secondary p-2 w-100" href="<?php echo site_url('classes/create')?>" role="button"><i class="fa fa-plus"></i> Create Classes</a>
         </div>
 
         <!-- My sched-->
@@ -80,17 +80,18 @@
         <div class="row flex-row flex-nowrap overflow-auto" >
         <?php foreach ($classes as $class){?>
           <?php $color = $bg_arr[array_rand($bg_arr,1)]?>
-          <div class="col-6">
+          
+          <div class="col-10">
+          <a style = "text-decoration: none !important" class="text-dark" href = "<?php echo site_url('classes/viewClass/'); echo $class->class_id?>">
           <div class="card card-block">
-              <h5 class="card-header <?php echo $class->class_status != 2? ' text-white '.$color : 'text-white bg-secondary'; ?>"><?php echo $class->class_name ?></h5>
+              <h5 style= "background-color: <?php echo $class->color?>" class="card-header <?php echo $class->class_status != 2? ' text-white ' : 'text-white bg-secondary'; ?>"><?php echo $class->class_name ?></h5>
               <div class="card-body">
                   <p class="card-text"> <?php echo $class->description ?> </p>
-                  <a href = "<?php echo site_url('classes/viewClass/'); echo $class->class_id?>">
-                  <button style="border-radius: 60%; border-color:#D3D3D3" class = "btn float-right btn-outline-secondary"> <i class="fa fa-angle-right" ></i></button> 
-                  </a>
+                  <button style="border-radius: 60%" class = "btn float-right btn-outline-light"> <i class="fa fa-angle-right" ></i></button> 
               </div>
           </div>
           </div>
+          </a>
         <?php }?>
         </div> 
         </div> 

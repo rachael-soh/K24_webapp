@@ -1,8 +1,9 @@
-<li class="breadcrumb-item"> <a href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>" class="text-light"> <?php echo session()->get('class_name') ?> </a> </li>
-<li class="breadcrumb-item"> <a href="<?php echo site_url('TestReport/tests')?>" class="text-light"> Tests </a> </li>
+<li class="breadcrumb-item text-dark"> <a href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>" class="text-dark"> <?php echo session()->get('class_name') ?> </a> </li>
+<li class="breadcrumb-item text-dark"> <a href="<?php echo site_url('TestReport/tests')?>" class="text-dark"> Tests </a> </li>
 <li class="breadcrumb-item" aria-current="page"><?php echo $test->test_status == 1? "Pretest" : "Posttest" ?></li>
 </ol>
-</nav>
+</div>
+</div>
 <div class="container m-1 p-1"> 
 <h3> Beginning <?php echo $test->test_status == 1? "Pretest" : "Posttest" ?>: </h3>
 <hr>

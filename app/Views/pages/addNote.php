@@ -1,8 +1,9 @@
-<li class="breadcrumb-item text-light"> <a class="text-light" href="<?php echo site_url('classes/viewclass/')?><?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
-<li class="breadcrumb-item text-light"> <a class="text-light" href="<?php echo site_url('notes/notes')?>"> Notes </a> </li>
+<li class="breadcrumb-item text-dark"> <a class="text-dark" href="<?php echo site_url('classes/viewclass/')?><?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
+<li class="breadcrumb-item text-dark"> <a class="text-dark" href="<?php echo site_url('notes/notes')?>"> Notes </a> </li>
 <li class="breadcrumb-item active" aria-current="page">Add Note</li>
 </ol>
-</nav>
+</div>
+</div>
 <?php if (session()->get('success')): ?>
     <div class="alert alert-success" role="alert">
     <?= session()->get('success') ?>
@@ -14,7 +15,7 @@
 </div>
 <?php endif; ?>
 
-
+<div class="container">
 <form method="post" action="<?php echo site_url('notes/addNote')?>" enctype="multipart/form-data">
 <div class="form-group row">
     <label for="note_name" class="col-sm-2 col-form-label">Note name</label>
@@ -28,7 +29,8 @@
       <input type="file" class="form-control" id="note_doc" name="note_doc" >
     </div>
   </div>
-  <div class="form-group row">
-  <button type="submit" name="addnote" value="upload" class="btn btn-primary"> Create </button>
+  <div class="form-row">
+  <button type="submit" name="addnote" value="upload" class="btn btn-success w-100"> Create </button>
   </div>
 </form>
+</div>

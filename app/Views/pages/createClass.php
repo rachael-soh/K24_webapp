@@ -1,6 +1,7 @@
 <li class="breadcrumb-item active" aria-current="page"><?php echo 'Create class' ?></li>
 </ol>
-</nav>
+</div>
+</div>
 <!-- errors & success-->
 <?php if (session()->get('success')): ?>
     <div class="alert alert-success" role="alert">
@@ -15,6 +16,7 @@
 
 <form name="edit" method="post" action="<?php echo site_url('classes/create')?>">
     <h2 class="col-sm-10">Create New Class</h2>
+    <div class="container">
     <div class="form-group row">
     <label for="class_name" class="col-sm-2 col-form-label">Class Name</label>
     <div class="col-sm-10">
@@ -46,7 +48,7 @@
     </div>
     </div>
   </div>
-
+  <div class="container">
   <fieldset class="form-group">
     <div class="row">
       <legend class="col-form-label col-sm-2 pt-0">Recurring</legend>
@@ -72,7 +74,9 @@
       </div>
     </div>
   </fieldset>
+  </div>
 
+  <div class="container">
   <div class="form-group row">
     <label for="start_date" class="col-sm-2 col-form-label">Start Date</label>
     <div class="col-sm-4"> 
@@ -84,7 +88,7 @@
     </div>
     </div>
   </div>
-  
+  </div>
   <script type="text/javascript">
 
 
@@ -102,7 +106,7 @@ function getValue(x) {
   }
 }
 </script>
-
+<div class="container">
   <div id = "days" class="form-group row" style="display:none">
     <div class="col-sm-2">Days</div>
     <div class="col-sm-10">
@@ -159,7 +163,9 @@ function getValue(x) {
   <?php endif; ?>
   <div class="form-group row">
     <div class="col-sm-10">
-      <button type="submit" value="create" class="btn btn-primary"> Create </button>
+      <button type="submit" value="create" class="btn btn-success w-100"> Create </button>
     </div>
   </div>
+  </div>
 </form>
+</div>

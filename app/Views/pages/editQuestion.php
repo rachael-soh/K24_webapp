@@ -1,9 +1,10 @@
-<li class="breadcrumb-item "> <a class="text-light" href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
-<li class="breadcrumb-item "> <a class="text-light" href="<?php echo site_url('TestReport/tests')?>"> Tests </a> </li>
-<li class="breadcrumb-item "> <a class="text-light" href="<?php echo site_url('TestReport/editTest')?>"> Edit test </a> </li>
+<li class="breadcrumb-item text-dark"> <a class="text-dark" href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
+<li class="breadcrumb-item text-dark"> <a class="text-dark" href="<?php echo site_url('TestReport/tests')?>"> Tests </a> </li>
+<li class="breadcrumb-item text-dark"> <a class="text-dark" href="<?php echo site_url('TestReport/editTest')?>"> Edit test </a> </li>
 <li class="breadcrumb-item active" aria-current="page">Edit Question</li>
 </ol>
-</nav>
+</div>
+</div>
 
 <!-- errors & success-->
 <?php if (session()->get('success')): ?>

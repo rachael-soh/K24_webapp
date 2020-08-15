@@ -57,6 +57,7 @@ class Classes extends BaseController
                     $dow = implode('',$dow);
                     $pretest = $classModel->autoinc() + 1;
                     $posttest = $classModel->autoinc() + 2;
+                    $color = $classModel->rgba_color();
                     $newData = [
                         'class_name'=> $this->request->getPost('class_name'),
                         'description'=> $this->request->getPost('description'),
@@ -69,11 +70,13 @@ class Classes extends BaseController
                         'pretest_id'=>$pretest,
                         'posttest_id'=>$posttest,
                         'class_status' => 0,
-                        'dow'=>$dow
+                        'dow'=>$dow,
+                        'color'=>$color
                     ];
                     } else {
                         $pretest = $classModel->autoinc() + 1;
                         $posttest = $classModel->autoinc() + 2;
+                        $color = $classModel->rgba_color();
                         $newData = [
                             'class_name'=> $this->request->getPost('class_name'),
                             'description'=> $this->request->getPost('description'),
@@ -86,6 +89,7 @@ class Classes extends BaseController
                             'pretest_id'=>$pretest,
                             'posttest_id'=>$posttest,
                             'class_status' => 0,
+                            'color'=>$color
                         ];
                     }
                     $user_id = session()->get('user_id');
@@ -220,9 +224,10 @@ class Classes extends BaseController
         $user_id = session()->get('user_id');
 
         $data['classL'] = $model->getClasses();
-        $userClasses = $model->myClasses($user_id);
+        $userClasses = $model->userClasses($user_id);
         $data['userClasses'] = array_values($userClasses);
 
+        session()->set('explore',1);
 
         echo view("templates/header");
         echo view("pages/exploreClasses", $data);
@@ -246,10 +251,13 @@ class Classes extends BaseController
                 if ($model->noTimeConflict($user_id, $class_id) && $model->canJoin($class_id)){
                     $model->joinClass($user_id, $class_id);
                     session()->setFlashData('success', 'Joined class!');
+                    return redirect()->to(site_url('classes/explore'));
                 } else if (!$model->canJoin($class_id)){
                     session()->setFlashData('error', 'Inactive class!');
+                    return redirect()->to(site_url('classes/explore'));
                 } else {
                     session()->setFlashData('error', 'Time conflict!');
+                    return redirect()->to(site_url('classes/explore'));
                 }
             } 
             // Edit class info
@@ -257,11 +265,23 @@ class Classes extends BaseController
                 $class_id = $this->request->getVar('edit');
                 $isHost = $permModel->isHost($user_id, $class_id);
                 if ($isHost == 1){
-                    return redirect()->to('/k24/public/Classes/edit/'.$class_id);
+                    return redirect()->to(site_url('classes/edit/'.$class_id));
                 } else {
                     session()->setFlashdata('error', "Cannot edit class!");
                     return redirect()->to(site_url('classes/viewclass/'.$class_id));
                 }
+            }
+            // drop class
+            else if ($this->request->getVar('drop')){
+                if (session()->get('isHost') == 0){
+                    $class_id = $this->request->getVar('drop');
+                    $model->removePeserta($user_id, $class_id);
+                    return redirect()->to(site_url('classes/viewclass/'.$class_id));
+                } else {
+                    $model->removeClass($class_id);
+                    return redirect()->to(site_url('classes/viewclass/'.$class_id));
+                }
+                
             }
             // remove class. only admin can remove
             else if($this->request->getVar('remove')){
@@ -269,13 +289,14 @@ class Classes extends BaseController
                 if (in_array(16, $allowed)){
                     $class_id = $this->request->getVar('remove');
                     $model->removeClass($class_id);
+                    return redirect()->to(site_url('classes/explore'));
                 }
             } 
             // search for class
             else if($this->request->getVar('search_button')){
                 $desc = $this->request->getVar('search_desc');
                 $data['classL'] = $model->searchClass($desc);
-
+                
             } 
             // get all classes
             else if($this->request->getVar('all')){
@@ -285,9 +306,11 @@ class Classes extends BaseController
             else if($this->request->getVar('view')){
                 $class_id = $this->request->getVar('view');
                 session()->set('class_id', $class_id);
+                session()->setFlashdata('explore',1);
                 return redirect()->to('/k24/public/Classes/viewClass/'.$class_id);
             }
         } 
+        session()->set('explore',1);
         echo view("templates/header");
         echo view("pages/exploreClasses", $data);
         echo view("templates/footer");

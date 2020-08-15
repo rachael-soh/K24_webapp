@@ -41,9 +41,7 @@ class Notes extends BaseController
                 if (in_array(8, $allowed)){
                     $noteModel = new NoteModel();
                     $note_id = $this->request->getPost('edit');
-                    $note = $noteModel->getNote($note_id);
-                    session()->setFlashData('note',$note);
-                    return redirect()->to('/k24/public/Notes/editNote');
+                    return redirect()->to('/k24/public/Notes/editNote/'.$note_id);
                 } else {
                     session()->setFlashData('error', 'No permission to edit note');
                 }
@@ -117,7 +115,7 @@ class Notes extends BaseController
         echo view("pages/addNote");
         echo view("templates/footer");
     }
-    public function editNote(){
+    public function editNote($note_id){
         $noteModel = new NoteModel();
         // Get perms
         $permModel = new ManagePermission();
@@ -132,6 +130,8 @@ class Notes extends BaseController
         } else {
             $allowed = $permModel->fetchRolePerms($role_id);
         }
+        $note = $noteModel->getNote($note_id);
+        $data['note'] = $note;
 
         if ($this->request->getMethod()=="post"){
             if (in_array(8, $allowed)){
@@ -143,7 +143,7 @@ class Notes extends BaseController
                     "note_name"=>$note_name,
                     "note_doc"=>$filename,
                 ];
-                $noteModel->editNote($data);
+                $noteModel->editNote($data, $note_id);
                 session()->setFlashData('sucess', 'Edited note!');
                 return redirect()->to('/k24/public/Notes/notes');
             } else {
@@ -151,7 +151,7 @@ class Notes extends BaseController
             }
         }
         echo view("templates/header");
-        echo view("pages/editNote");
+        echo view("pages/editNote", $data);
         echo view("templates/footer");
     }
 }

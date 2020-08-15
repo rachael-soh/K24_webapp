@@ -14,7 +14,7 @@ class TestReport extends BaseController
         
         $classModel = new ClassModel();
         $testModel = new TestModel();
-        session()->set('report', 'class');
+        #session()->set('report', 'class');
         $data['classL'] = $classModel->getClasses();
         if (in_array(1, $allowed)){
             if ($this->request->getMethod() == "post"){
@@ -22,12 +22,12 @@ class TestReport extends BaseController
                 // get reports by class
                 if ($action == "byClass"){
                     $data['classL'] = $classModel->getClasses();
-                    session()->setFlashdata('report', 'class');
+                    session()->set('report', 'class');
                 } 
                 // get all user report
                 else if ($action == "byUser"){
                     $data['userL'] = $testModel->getAllUserReports();
-                    session()->setFlashdata('report', 'user');
+                    session()->set('report', 'user');
                 } 
                 // search by class name
                 else if($this->request->getVar('search_button') && session()->get('report') == 'class'){
@@ -50,6 +50,8 @@ class TestReport extends BaseController
                     session()->setFlashdata('viewAll',1);
                     return redirect()->to(site_url('TestReport/classReport/').$class_id);
                 }
+            } else {
+                session()->set('report', 'class');
             }
         } else {
             session()->setFlashdata('error', 'Not allowed to view all report');
@@ -63,7 +65,6 @@ class TestReport extends BaseController
         $testModel = new TestModel();
         // get the reports of each user
         $scores = $testModel->getClassReports($class_id);
-        echo 'Old code not working!!!';
         //print_r($scores);
         $data['userL'] = $scores;
         
@@ -303,7 +304,10 @@ class TestReport extends BaseController
         $data['test'] = $test;
 
         if ($this->request->getMethod() == 'post'){
-            if ($test_type == 1){
+            if ($test->duration == 0){
+                session()->setFlashdata('error', 'Test not ready!');
+                
+            } else if ($test_type == 1){
                 $duration = $test->duration; 
                 $end_time = time() + $duration * 60;
                 $end_time = date("Y-m-d H:i:s", $end_time);

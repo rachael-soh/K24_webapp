@@ -1,6 +1,7 @@
 <li class="breadcrumb-item active" aria-current="page">My Classes</li>
 </ol>
-</nav>
+</div>
+</div>
 
 <!-- errors & success-->
 <?php if (session()->get('success')): ?>
@@ -14,12 +15,12 @@
 </div>
 <?php endif; ?>
 
-<nav class="navbar navbar-light bg-light">
+<div class="container">
 <form method='get' action='<?php echo site_url('classes/classAction')?>' class="form-inline">
     <input class="form-control col-8" type="search" id = "search_desc" name="search_desc" placeholder="Search" aria-label="Search">
     <button class="btn btn-outline-success col-2" type="submit" name="search_button" value="1"> <i class="fas fa-search"></i> </button>
     <button class="btn btn-outline-success col-2" type="submit" name="all" value="2"> <i class="fas fa-list"></i> </button>
-</nav>
+</div>
 <?php $bg_arr = array('bg-primary', 'bg-success','bg-danger','bg-danger','bg-info', 'bg-warning', 'bg-dark')?>
 <!-- CALL ON ANOTHER METHOD!-->
 <?php 

@@ -1,7 +1,8 @@
-<li class="breadcrumb-item"><a class="text-light" href="<?php echo site_url('dashboard/manageUsers')?>">Manage User & Permission</a></li>
+<li class="breadcrumb-item text-dark"><a class="text-dark" href="<?php echo site_url('dashboard/manageUsers')?>">Manage User & Permission</a></li>
 <li class="breadcrumb-item active" aria-current="page">User Role</li>
 </ol>
-</nav>
+</div>
+</div>
 
 <!-- errors & success-->
 <?php if (session()->get('success')): ?>
@@ -15,12 +16,11 @@
 </div>
 <?php endif; ?>
 
-<div class=" table-responsive">
+<div class="table-responsive">
 <table class="table">
 <thead>
     <tr>
         <th scope="col">Name</th>
-        <th scope="col">Email</th>
         <th scope="col">Role</th>
         <th scope="col">Action</th>
         <!-- <th class="cell">Permissions</th> -->
@@ -41,7 +41,6 @@
 <?php foreach ($userL as $user) { ?>
     <tr class="<?php echo $user->user_status != 1? "table-secondary" : "none" ?>">
         <td ><?php echo $user->fname.' '.$user->lname; ?> </td>
-        <td ><?php echo $user->email; ?> </td>
 
         <td >
         <form method='post' action='<?php echo site_url('ManageUsers/userRoles')?>'>

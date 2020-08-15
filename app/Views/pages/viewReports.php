@@ -1,6 +1,7 @@
 <li class="breadcrumb-item active" aria-current="page">View Reports</li>
 </ol>
-</nav>
+</div>
+</div>
 <?php $bg_arr = array('bg-primary', 'bg-success','bg-danger','bg-danger','bg-info', 'bg-warning', 'bg-dark')?>
 
 <?php if (session()->get('success')): ?>
@@ -55,10 +56,10 @@ if (isset($userL)){ ?>
         <td class="cell"><?php echo $user->fname.' '.$user->lname; ?> </td>
         <td class="cell"><?php echo $user->class_name; ?> </td>
 
-        <td class="cell"> <?php echo $user->pretest? $user->pretest : "-"; ?></td>
-        <td class="cell"> <?php echo $user->posttest? $user->posttest : "-"; ?></td>
+        <td class="cell"> <?php echo !is_null($user->pretest)? $user->pretest : '-'; ?></td>
+        <td class="cell"> <?php echo $user->posttest? $user->posttest : 0; ?></td>
         <td class="cell"> 
-        <?php if (!$user->posttest || !$user->pretest) { 
+        <?php if (is_null($user->posttest) && is_null($user->pretest) || $user->posttest == $user->pretest) { 
                 echo "-";
             } else if ($user->posttest >= $user->pretest){
                 echo "Naik";
@@ -69,12 +70,12 @@ if (isset($userL)){ ?>
         </td>
         <td class="cell"> 
         <?php 
-        if (!$user->posttest || !$user->pretest) { 
-                echo "-";
-            } else if ($user->posttest >= 50){
+        if ($user->posttest >= 50) { 
                 echo "Pass";
-            } else {
+            } else if ($user->posttest < 50){
                 echo "Fail";
+            } else {
+                echo "-";
             }
         ?>
         </td>
@@ -83,15 +84,15 @@ if (isset($userL)){ ?>
         foreach ($classL as $class) {?>
             <?php $color = $bg_arr[array_rand($bg_arr,1)]?>
             <div class="card ">
-            <div class="card-header <?php echo $class->class_status == 2? "bg-secondary text-white" : "text-white ".$color?>"><?php echo $class->class_name?></div>
+            <div style= "background-color: <?php echo $class->color?>" class="card-header <?php echo $class->class_status == 2? "bg-secondary text-white" : "text-white "?>"><?php echo $class->class_name?></div>
             <div class="card-body ">
                 <p class="card-text <?php echo $class->class_status == 2? "d-none" : ""?>">
                 <?php 
                 echo $class->description;
                 echo '<br>';
-                echo $class->start_date.'  -  '.$class->end_date;
+                echo date('j F Y', strtotime($class->start_date)).'  -  '.date('j F Y', strtotime($class->end_date));
                 echo '<br>';
-                echo $class->start_time.'  -  '.$class->end_time;
+                echo date('H:i', strtotime($class->start_time)).'  -  '.date('H:i', strtotime($class->end_time));
                 ?>
             </p>
             <button style="border-radius: 60%; border-color:#D3D3D3" class = "btn float-right btn-outline-secondary"type="submit" id="view" name="view" value="<?php echo $class->class_id?>"> <i class="fa fa-angle-right" ></i></button> 

@@ -1,7 +1,8 @@
-<li class="breadcrumb-item"> <a class="text-light" href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
+<li class="breadcrumb-item text-dark"> <a class="text-dark" href="<?php echo site_url('classes/viewClass/')?><?php echo session()->get('class_id') ?>"> <?php echo session()->get('class_name') ?> </a> </li>
 <li class="breadcrumb-item active" aria-current="page">Notes</li>
 </ol>
-</nav>
+</div>
+</div>
 <?php if (session()->get('success')): ?>
     <div class="alert alert-success" role="alert">
     <?= session()->get('success') ?>

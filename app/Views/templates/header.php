@@ -14,7 +14,25 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
 
     <title></title>
-
+    <style>
+    .bs-example{
+        margin: 20px;        
+    }
+    .breadcrumb {
+      padding: 5px 0;
+      font-size: 3.5vw;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      > li {
+        display: inline;
+      }
+    }
+    /* Style to change separator  */
+    .breadcrumb-item + .breadcrumb-item::before {
+        content: ">";
+    }
+</style>
   </head>
   <body>
 
@@ -56,6 +74,7 @@
   </div>
   </div> 
   </nav>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark" aria-label="breadcrumb">
-  <ol class="breadcrumb bg-transparent py-1 m-1">
-    <li class="breadcrumb-item "><a href="<?php echo site_url('dashboard') ?>" class="text-light">Home</a></li>
+  <div class="container">
+  <div class="row">
+  <ul class="breadcrumb bg-transparent list-unstyled py-1 m-1">
+    <li class="breadcrumb-item d-inline m-0 p-0"><a href="<?php echo site_url('dashboard') ?>" class="text-dark">Home</a></li>

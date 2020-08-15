@@ -23,7 +23,7 @@ class NoteModel extends Model{
         $db = \Config\Database::connect();
         $query = $db->query('DELETE FROM notes WHERE note_id = '.$note_id);
     }
-    public function editNote($note_id){
+    public function editNote($data, $note_id){
         $db = \Config\Database::connect();
         foreach ($data as $key=>$value){
             if ($value){
