@@ -57,12 +57,18 @@
           </div>
 
           <div class="row">
-            <div class="col-12 col-sm-4">
-              <button type="submit" class="btn btn-primary">Update</button>
+            <div class="col-12 my-2">
+              <button type="submit" class="btn btn-primary w-100">Update</button>
             </div>
+            
 
           </div>
         </form>
+        
+            <a href="<?php echo site_url('pages/logout')?>">
+              <button class="btn btn-danger w-100">Log out</button>
+              </a>
+        
       </div>
     </div>
   </div>

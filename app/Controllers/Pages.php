@@ -38,7 +38,7 @@ class Pages extends BaseController
                 }	
             }
         }
-        echo view("templates/dashboard-header", $data);
+        echo view("templates/start-header", $data);
         echo view("pages/login");
         echo view("templates/footer");
     }
@@ -87,7 +87,7 @@ class Pages extends BaseController
                 return redirect()->to('/k24/public/');
             }
         }
-        echo view("templates/dashboard-header", $data);
+        echo view("templates/start-header", $data);
         echo view("pages/signup");
         echo view("templates/footer");
     }

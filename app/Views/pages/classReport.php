@@ -31,13 +31,13 @@
     <?php 
     
     foreach ($userL as $user){ ?>
-        <tr class="<?php echo $user->host == 1? 'font-weight-bold' : ''?>">
+        <tr class="<?php echo $user->host == 1? 'd-none' : ''?>">
         <td class="cell"><?php echo $user->fname.' '.$user->lname; ?> </td>
         <td class="cell"><?php echo $user->class_name; ?> </td>
-        <td class="cell"> <?php echo $user->pretest ?></td>
-        <td class="cell"> <?php echo $user->posttest;?></td>
+        <td class="cell"> <?php echo !is_null($user->pretest)? $user->pretest : '-'; ?></td>
+        <td class="cell"> <?php echo !is_null($user->pretest)? $user->posttest : '-'; ?></td>
         <td class="cell"> 
-        <?php if (is_null($user->posttest) && is_null($user->pretest)) { 
+        <?php if (is_null($user->posttest) && is_null($user->pretest) || $user->posttest === $user->pretest ) { 
                 echo "-";
             } else if ($user->posttest >= $user->pretest){
                 echo "Naik";
@@ -48,13 +48,16 @@
         </td>
         <td class="cell"> 
         <?php 
-        if ($user->posttest >= 50) { 
+            if (is_null($user->pretest) && is_null($user->posttest)){
+                echo '-';
+            }
+            else if ($user->posttest >= 50) { 
                 echo "Pass";
-        } else if ($user->posttest && $user->posttest < 50){
-            echo "Fail";
-        } else {
-            echo "-";
-        }
+            } else if ($user->posttest < 50){
+                echo "Fail";
+            } else {
+                echo "-";
+            }
         ?>
         </td>
         </tr>

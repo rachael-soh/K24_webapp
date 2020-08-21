@@ -306,7 +306,7 @@ class TestReport extends BaseController
         if ($this->request->getMethod() == 'post'){
             if ($test->duration == 0){
                 session()->setFlashdata('error', 'Test not ready!');
-                
+
             } else if ($test_type == 1){
                 $duration = $test->duration; 
                 $end_time = time() + $duration * 60;
@@ -351,9 +351,9 @@ class TestReport extends BaseController
             else if ($test->test_status == 3){
                 session()->setFlashData('error', "Test can't be taken anymore!");
                 return redirect()->to('/k24/public/TestReport/testAction');
-            }
+            } 
             
-        }
+        } 
         
         echo view("templates/header");
         echo view("pages/startTest", $data);

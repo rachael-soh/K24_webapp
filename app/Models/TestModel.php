@@ -50,8 +50,8 @@ class TestModel extends Model{
         $query = $db->query('
         WITH pretest AS (SELECT us.user_id, us.score as pretest, us.class_id FROM classes c, user_scores us WHERE c.pretest_id = us.test_id),
         posttest AS (SELECT us.user_id, us.score as posttest, us.class_id FROM classes c, user_scores us WHERE c.posttest_id = us.test_id),
-        people AS (SELECT u.fname, u.lname, c.class_name, c.class_id, u.user_id FROM users u, classes c, user_classes uc WHERE uc.class_id = c.class_id AND uc.user_id = u.user_id)
-        SELECT fname, lname, class_name, pretest, posttest
+        people AS (SELECT u.fname, u.lname, c.class_name, c.class_id, u.user_id, uc.host FROM users u, classes c, user_classes uc WHERE uc.class_id = c.class_id AND uc.user_id = u.user_id)
+        SELECT fname, lname, class_name, pretest, posttest, host
         FROM people
         LEFT JOIN pretest ON pretest.user_id = people.user_id AND pretest.class_id = people.class_id
         LEFT JOIN posttest ON posttest.user_id = people.user_id AND posttest.class_id = people.class_id
@@ -72,9 +72,9 @@ class TestModel extends Model{
         $queryB = $db->query('
         WITH pretest AS (SELECT us.user_id, us.score as pretest, us.class_id FROM classes c, user_scores us WHERE c.pretest_id = us.test_id),
         posttest AS (SELECT us.user_id, us.score as posttest, us.class_id FROM classes c, user_scores us WHERE c.posttest_id = us.test_id),
-        people AS (SELECT u.fname, u.lname, c.class_name, c.class_id, u.user_id FROM users u, classes c, user_classes uc WHERE uc.class_id = c.class_id AND uc.user_id = u.user_id AND
+        people AS (SELECT u.fname, u.lname, c.class_name, c.class_id, u.user_id, uc.host FROM users u, classes c, user_classes uc WHERE uc.class_id = c.class_id AND uc.user_id = u.user_id AND
         (u.fname LIKE "%'.$desc.'%" OR u.lname LIKE "%'.$desc.'%"))
-        SELECT fname, lname, class_name, pretest, posttest
+        SELECT fname, lname, class_name, pretest, posttest, host
         FROM people
         LEFT JOIN pretest ON pretest.user_id = people.user_id AND pretest.class_id = people.class_id
         LEFT JOIN posttest ON posttest.user_id = people.user_id AND posttest.class_id = people.class_id

@@ -174,7 +174,7 @@ function getValue(x) {
   <?php endif; ?>
   <div class="container">
     <div class="form-row w-100">
-      <button type="submit" value="create" class="btn btn-success w-100"> Create </button>
+      <button type="submit" value="create" class="btn btn-success w-100"> Save </button>
     </div>
   </div>
 </form>

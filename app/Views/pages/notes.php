@@ -21,8 +21,8 @@
 <?php foreach($notes as $note) {?>
     <a href="<?php echo base_url()."/uploads/".$note->note_path?>" class="list-group-item list-group-item-action  d-flex justify-content-between"> 
     <p class="py-2 m-0 flex-grow-1"><?php echo $note->note_name;?></p>
-    <button type="submit" name="edit" value =<?php echo $note->note_id ?> class="btn text-success float-right"><i class="fa fa-edit"></i></button>
-    <button type="submit" name="delete" value =<?php echo $note->note_id ?> class="btn text-danger float-right"><i class="fa fa-times"></i></button>
+    <button type="submit" name="edit" value =<?php echo $note->note_id ?> class="btn text-success float-right <?php echo session()->isHost == 0? 'd-none' : ''?>"><i class="fa fa-edit"></i></button>
+    <button type="submit" name="delete" value =<?php echo $note->note_id ?> class="btn text-danger float-right <?php echo session()->isHost == 0? 'd-none' : ''?>"><i class="fa fa-times"></i></button>
     </a>
 <?php } ?>
 </div>

@@ -1,19 +1,17 @@
-<div class="container">
+<div class="container mx-2 px-2 mb-3">
 	<div class="row">
-	  	<div class="col-12 col-sm-8 offset-sm-2 col-md-6 offset-md-3 mt-5 pt-3 pb-3 bg-white from-wrapper">
+	  	<div class="col-12 mt-3 p-1 bg-white from-wrapper">
         	<div class="container">
-				<h3> Sign up </h3>
-				<hr>
                 <form class="" action="<?php echo site_url('pages/signup')?>" method="post">
                     <div class = "row">
-                        <div class="col-12 col-sm-6">
+                        <div class="col-6">
                             <div class="form-group">
                                 <label for="fname">First Name</label>
                                 <input type="text" class="form-control" id="fname" name="fname" placeholder="First Name" value = "<?= set_value('fname') ?>">
                             </div>
                         </div>
                     
-                        <div class="col-12 col-sm-6">
+                        <div class="col-6">
                             <div class="form-group">
                                 <label for="lname">Last Name</label>
                                 <input type="text" class="form-control" id="lname" name="lname" placeholder="Last Name" value = "<?= set_value('lname') ?>">
@@ -46,8 +44,8 @@
                         <?php endif; ?>
                         </div>				
 						<div class="row">
-							<div class="col-12 col-sm-4">
-								<button type="submit" class="btn btn-primary">Sign up</button>	
+							<div class="col-4">
+								<button type="submit" class="btn btn-success">Sign up</button>	
 							</div>
 						</div>		
 		

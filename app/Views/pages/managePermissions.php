@@ -30,6 +30,7 @@
     <div id="collapseOne" class="collapse" aria-labelledby="headingOne"  data-parent="#accordion">
       <div class="card-body">
         <form method='post' action='<?php echo site_url('ManagePermissions/managePermissions')?>'>
+        <div class="container mb-2">
         <?php 
         foreach($all as $a){
             if (in_array($a->perm_id,$admins)){
@@ -43,7 +44,8 @@
             }
         }
         ?>
-        <button class = "btn btn-primary text-center" name="action" value="admin" type="submit"> Save </button>
+        </div>
+        <button class = "btn mt-2 btn-outline-primary text-center w-100" name="action" value="admin" type="submit"> <i class="fa fa-save" ></i> </button>
         </form>
       </div>
     </div>
@@ -59,6 +61,7 @@
     <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
       <div class="card-body">
         <form method='post' action='<?php echo site_url('ManagePermissions/managePermissions')?>'>
+        <div class="container mb-2">
         <?php foreach($all as $a){
             if (in_array($a->perm_id,$hosts)){
                 echo '<input class="form-check-input" type="checkbox" id="perms" name="perms[]" value=" '.$a->perm_id.'" checked>';
@@ -70,7 +73,8 @@
                 echo '<br>';
             }
         } ?>
-        <button class = "btn btn-primary text-center" name="action" value="host" type="submit"> Save </button>
+        </div>
+        <button class = "btn mt-2 btn-outline-primary text-center w-100" name="action" value="host" type="submit"> <i class="fa fa-save" ></i>  </button>
         </form>
       </div>
     </div>
@@ -86,6 +90,7 @@
     <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion">
       <div class="card-body">
         <form method='post' action='<?php echo site_url('ManagePermissions/managePermissions')?>'>
+        <div class="container mb-2">
         <?php foreach($all as $a){
             if (in_array($a->perm_id,$peserta)){
                 echo '<input class="form-check-input" type="checkbox" id="perms" name="perms[]" value=" '.$a->perm_id.'" checked>';
@@ -98,7 +103,8 @@
             }
         }
         ?>   
-        <button class = "btn btn-primary text-center"  name="action" value="peserta" type="submit"> Save </button>
+        </div>m
+        <button class = "btn mt-2 btn-outline-primary text-center w-100"  name="action" value="peserta" type="submit"> <i class="fa fa-save" ></i>  </button>
         </form>   
         </div>
     </div>

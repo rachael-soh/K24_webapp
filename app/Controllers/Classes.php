@@ -212,6 +212,13 @@ class Classes extends BaseController
         $user_id = session()->get('user_id');
 
         $data['classL'] = $model->myClasses($user_id);
+        if ($this->request->getMethod() == "get"){
+            // search for class
+            if($this->request->getVar('search_button')){
+                $desc = $this->request->getVar('search_desc');
+                $data['classL'] = $model->searchMyClass($user_id, $desc);
+            } 
+        }
         
         echo view("templates/header");
         echo view("pages/myClasses", $data);
@@ -295,8 +302,7 @@ class Classes extends BaseController
             // search for class
             else if($this->request->getVar('search_button')){
                 $desc = $this->request->getVar('search_desc');
-                $data['classL'] = $model->searchClass($desc);
-                
+                $data['classL'] = $model->searchClass($desc); 
             } 
             // get all classes
             else if($this->request->getVar('all')){
@@ -406,8 +412,8 @@ class Classes extends BaseController
 
     private function sendEmail($recipient, $message){
         $email = \Config\Services::email();
-
-        $email->setFrom('rachael.suhendra012@gmail.com', 'Rachael Soh');
+        ## CHANGE THIS SETFROM ##
+        $email->setFrom('EMAIL', 'NAME');
         $email->setTo($recipient);
 
         $email->setSubject('Invite Test');

@@ -164,6 +164,15 @@ class ClassModel extends Model{
         return $results;
     }
 
+    public function searchMyClass($user_id, $desc){
+        // Search class by name
+        $db = \Config\Database::connect();
+
+        $query1 = $db->query('SELECT * FROM user_classes uc, classes c WHERE uc.class_id = c.class_id AND uc.user_id='.$user_id.' AND c.class_name LIKE "%'.$desc.'%" ORDER BY c.class_status');
+        $results1 = $query1->getResult();
+        return $results1;
+    }
+
     public function fullSchedule(){
         // Schedule of all classes for Admin
         $db = \Config\Database::connect();

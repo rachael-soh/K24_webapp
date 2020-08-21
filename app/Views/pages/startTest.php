@@ -4,6 +4,18 @@
 </ol>
 </div>
 </div>
+<!-- errors & success-->
+<?php if (session()->get('success')): ?>
+    <div class="alert alert-success" role="alert">
+    <?= session()->get('success') ?>
+    </div>
+<?php endif; ?>  
+<?php  if (session()->get('error')): ?>
+<div class="alert alert-danger" role="alert">
+<?= session()->get('error') ?>
+</div>
+<?php endif; ?>
+
 <div class="container m-1 p-1"> 
 <h3> Beginning <?php echo $test->test_status == 1? "Pretest" : "Posttest" ?>: </h3>
 <hr>

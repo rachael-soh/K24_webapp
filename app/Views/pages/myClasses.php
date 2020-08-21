@@ -16,31 +16,28 @@
 <?php endif; ?>
 
 <div class="container">
-<form method='get' action='<?php echo site_url('classes/classAction')?>' class="form-inline">
+<form method='get' action='<?php echo site_url('classes/myClasses')?>' class="form-inline">
     <input class="form-control col-8" type="search" id = "search_desc" name="search_desc" placeholder="Search" aria-label="Search">
     <button class="btn btn-outline-success col-2" type="submit" name="search_button" value="1"> <i class="fas fa-search"></i> </button>
     <button class="btn btn-outline-success col-2" type="submit" name="all" value="2"> <i class="fas fa-list"></i> </button>
 </div>
-<?php $bg_arr = array('bg-primary', 'bg-success','bg-danger','bg-danger','bg-info', 'bg-warning', 'bg-dark')?>
 <!-- CALL ON ANOTHER METHOD!-->
 <?php 
 if (isset($classL)){
     foreach ($classL as $class){ ?>
-    <?php $color = $bg_arr[array_rand($bg_arr,1)]?>
-<div class="card  ">
-<div class="card-header <?php echo $class->class_status != 2? ' text-white '.$color : 'text-white bg-secondary'; ?>"><?php echo $class->class_name?></div>
+    <a style = "text-decoration: none !important" class="text-dark" href = "<?php echo site_url('classes/viewClass/'); echo $class->class_id ?>">
+<div class="card my-2">
+<div style= "background-color: <?php echo $class->color?>" class="card-header <?php echo $class->class_status != 2? ' text-white ' : 'text-white bg-secondary'; ?>"><?php echo $class->class_name?></div>
   <div class="card-body ">
     <p class="card-text <?php echo $class->class_status==2? 'd-none' : ''?>">
         <?php 
         echo $class->description;
         echo '<br>';
-        echo $class->start_date.'  -  '.$class->end_date;
+        echo date('j F Y', strtotime($class->start_date)).'  -  '.date('j F Y', strtotime($class->end_date));
         echo '<br>';
-        echo $class->start_time.'  -  '.$class->end_time;
+        echo date('H:i', strtotime($class->start_time)).'  -  '.date('H:i', strtotime($class->end_time));
         ?>
     </p>
-    <a href = "<?php echo site_url('classes/viewClass/')?><?php echo $class->class_id?>">
-    <button class="btn btn-lg float-right" type="submit" name="view" value="<?php echo $class->class_id?>"><i class="fas fa-eye"></i></button>
     </a>
 </div>
 </div>
